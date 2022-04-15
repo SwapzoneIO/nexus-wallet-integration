@@ -1,0 +1,24 @@
+@font-face {
+    font-display: swap;
+    font-family: "Play";
+    font-style: normal;
+    font-weight: normal;
+    src: local('Play'), local('play'), url('../assets/fonts/PlayRegular.ttf') format('truetype');
+  }
+  
+  @font-face {
+    font-display: swap;
+    font-family: "Play";
+    font-style: normal;
+    font-weight: bold;
+    src: local('Play'), local('play'), url('../assets/fonts/PlayBold.ttf') format('truetype');
+  }
+  
+  @font-face {
+    font-display: swap;
+    font-family: "Sansation";
+    font-style: normal;
+    font-weight: bold;
+    src: local('Sansation'), local('Sansation'), url('../assets/fonts/Sansation_Bold.ttf') format('truetype');
+  }
+  

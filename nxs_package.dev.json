@@ -1,0 +1,12 @@
+{
+  "name": "swapzone-crypto-exchange-aggregator",
+  "displayName": "Swapzone: Exchange crypto at the best rates",
+  "description": "Swapzone is a crypto exchange aggregator that helps users to find the best rate among 15+ services and swap cryptocurrencies. Buy NXS coin for BTC, ETH, LTC and 500+ coins and tokens instantly.",
+  "type": "app",
+  "entry": "http://localhost:24011/dev.html",
+  "icon": "dist/icon.svg",
+  "author": {
+    "name": "Swapzone",
+    "email": "pm@swapzone.io"
+  }
+}

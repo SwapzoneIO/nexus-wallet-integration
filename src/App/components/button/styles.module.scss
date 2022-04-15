@@ -1,0 +1,30 @@
+@import '../../../styles/variables.scss';
+
+.step3{
+    color: $colorBlue;
+    background: $colorBackground;
+    border: 1px solid $colorBlue;
+}
+
+.container{
+    display: flex;
+    align-items: center;
+    margin-top: 65px;
+
+    .back, .buttonContainer{
+        flex-basis: 50%;
+    }
+    .back{
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 21px;
+        color: $colorTitleGray;
+    }
+    .backButton{
+        background: none;
+        display: flex;
+        align-self: center;
+        width: 50%;
+        margin-right: 10px;
+    }
+}

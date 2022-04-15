@@ -1,0 +1,42 @@
+@import '../../../styles/variables.scss';
+
+.wrapper {
+  width: 50%;
+  margin: auto;
+  padding-bottom: 100px;
+}
+table{
+    width: 100%;
+    border-spacing: 0px 25px;
+
+    td{
+        width: 50%;
+        vertical-align: top;
+    
+        .address{
+            display: block;
+            width: 220px;
+            float: right;
+            margin-top: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 18px;
+            text-align: right;
+            color: $colorMenuGray;
+            word-wrap: break-word;
+        }
+    }
+    .left{
+        font-weight: 400;
+        font-size: 22px;
+        line-height: 25px;
+        color: $colorLiteGray;
+    }
+    .right{
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 21px;
+        text-align: right;
+        color: $colorTitleGray;
+    }
+}
