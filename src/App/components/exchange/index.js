@@ -17,21 +17,62 @@ const {
 
 const nextStep = 2
 
-function Exchange ({ toGo, account }) {
+function Exchange ({ toGo }) {
+  const [accounts, setAccounts] = useState([])
+  const [isClick, setDropdownVisible] = useState(false)
 
-  const { toAmount } = useSelector(state => state.exchange.exchangeInfo)
+  const { fromAmount, fromAccount, toAmount} = useSelector(state => state.exchange.exchangeInfo)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    apiCall('users/list/accounts').then(accounts => {
+      setAccounts(accounts)
+      dispatch({
+        type: TYPE.UPDATE_FROM_ACCOUNT,
+        account: accounts[0],
+      })
+    })
+  }, [])
+
+  const handleDropdown = () => {
+    (isClick) ? setDropdownVisible(false) : setDropdownVisible(true)
+  }
+  const handleAccount = (account) => {
+    dispatch({
+      type: TYPE.UPDATE_FROM_ACCOUNT,
+      account: account,
+    })
+    if (account.balance < fromAmount){
+      dispatch({
+        type: TYPE.UPDATE_FROM_AMOUNT,
+        amountFrom: account.balance,
+      })
+    }
+  }
   
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <div className={styles.column}>
           {/* <p style={{ maxWidth: 600, overflowWrap: 'break-word' }}>
-            {JSON.stringify(account, null, 2)}
+            {JSON.stringify(accounts, null, 2)}
           </p> */}
           <span>From</span>
-          <div className={styles.inform}>
-            <span>{account.name}</span>
-            <span className={styles.amount}>{account.balance} {account.token_name}</span>
+          <div className={styles.inform} onClick={handleDropdown} >
+            <span>Nexus ({fromAccount.name})</span>
+            <span className={styles.amount}>{fromAccount.balance} {fromAccount.token_name}</span>
+            <ul className={(isClick) ? styles.dropdown : styles.hide}>
+            {(accounts.length) ? 
+              accounts.map(account => (
+                <li className={styles.dropdown__elem} onClick={() => handleAccount(account)}>
+                  <span>Nexus ({account.name})</span>
+                  <span className={styles.amount}>{account.balance} {account.token_name}</span>
+                </li> 
+              )) :
+              <li className={styles.dropdown__elem}>
+                <span>Accounts not found</span>
+              </li>}
+            </ul>
           </div>
         </div>
         <div className={styles.columnImg}>
@@ -43,8 +84,7 @@ function Exchange ({ toGo, account }) {
         <div className={styles.column}>
         <span>To</span>
           <div className={styles.inform}>
-            <span>Etherium (Art)</span>
-            <span className={styles.amount}>0 ETH</span>
+            <span>Etherium </span>
           </div>
         </div>
           <CurrenciesList/>
@@ -53,14 +93,21 @@ function Exchange ({ toGo, account }) {
       <div className={styles.container}>
         <div className={styles.column}>
           <span>Amount</span>
-          <Input/>
+          <Input type='amount' />
+        </div>
+      </div>
+
+      <div className={styles.container}>
+        <div className={styles.column}>
+          <span>Address to receive</span>
+          <Input type='address' />
         </div>
       </div>
 
       <div className={styles.container}>
         <div className={styles.item}>
           <span>Available</span>
-          <span className={styles.amount}>{account.balance} {account.token_name}</span>
+          <span className={styles.amount}>{fromAccount.balance} {fromAccount.token_name}</span>
         </div>
         <div className={styles.item}>
           <span>Receive</span>

@@ -10,26 +10,38 @@ const {
 const MIN_WHOLE_LENGTH = 12
 
 
-function Input () {
-  const { fromAmount } = useSelector(state => state.exchange.exchangeInfo)
+function Input ({type}) {
+  const { fromAmount, fromAccount: { balance }, toAddress } = useSelector(state => state.exchange.exchangeInfo)
   const dispatch = useDispatch()
 
   const updateAmount = (evt) => {
-    const value = evt.target.value.trim().replace(/^0+/, '').replace(',', '.')
+    if (type === 'amount'){
+      const value = evt.target.value.trim().replace(/^0+/, '0').replace(',', '.')
 
-    if (isNaN(value) || !checkAmountLength(value) || Number(value) < 0) {
-      return
+      if (isNaN(value) || !checkAmountLength(value) || Number(value) < 0 || Number(value) > Number(balance)) {
+        return
+      }
+
+      if (value > 1) {
+        value.replace(/^0+/, '')
+      }
+
+      dispatch({
+        type: TYPE.UPDATE_FROM_AMOUNT,
+        amountFrom: value,
+      })
+    } else if (type === 'address'){
+      dispatch({
+        type: TYPE.UPDATE_TO_ADDRESS,
+        address: evt.target.value,
+      })
     }
 
-    dispatch({
-      type: TYPE.UPDATE_FROM_AMOUNT,
-      amountFrom: value,
-    })
   }
 
   const checkAmountLength = (value) => {
     const [whole, fractional] = value.split('.')
-    
+
     if (whole.length <= MIN_WHOLE_LENGTH && !fractional) {
       return true
     }
@@ -37,11 +49,15 @@ function Input () {
     return whole.length <= MIN_WHOLE_LENGTH
   }
 
-  return (
-    <>
+  if (type === 'amount'){
+    return (
       <input type="text" value={fromAmount} onChange={updateAmount}/>
-    </>
-  )
+    )
+  } else if (type === 'address'){
+    return (
+      <input type="text" value={toAddress} onChange={updateAmount}/>
+    )
+  }
 }
 
 export default Input

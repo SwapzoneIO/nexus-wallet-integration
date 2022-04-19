@@ -6,20 +6,10 @@ const {
   libraries: {
     React,
     React: { useState, useEffect },
-  },
-  utilities: {
-    apiCall,
   }
 } = NEXUS;
 
 export default function Main() {
-  const [account, setAccount] = useState('')
-
-  useEffect(() => {
-    apiCall('users/list/accounts').then(accounts => {
-      setAccount(accounts[0])
-    })
-  }, [])
 
   const [step, setNumberStep] = useState(1)
   const [isNext, setNextStep] = useState(false)
@@ -34,8 +24,8 @@ export default function Main() {
       <h2 className={styles.title}>Exchange with Swapzone</h2>
       <div className={styles.pagination}>{step} of 3</div>
       { !isNext ? 
-        <Exchange toGo={toGo} account={account}/> :
-        <Details toGo={toGo} account={account}/>
+        <Exchange toGo={toGo} /> :
+        <Details toGo={toGo} />
       }
     </div>
   );
