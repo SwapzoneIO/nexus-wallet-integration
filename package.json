@@ -29,6 +29,11 @@
     "dev": "cross-env NODE_ENV=development webpack serve --config webpack-dev.config.babel.js"
   },
   "dependencies": {
-    "react-custom-scrollbars": "^4.2.1"
+    "axios": "^0.26.1",
+    "config": "^3.3.7",
+    "next-config": "^0.1.0",
+    "react-custom-scrollbars": "^4.2.1",
+    "react-onclickoutside": "^6.12.1",
+    "redux-thunk": "^2.4.1"
   }
 }

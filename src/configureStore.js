@@ -1,6 +1,9 @@
-import createReducer from './reducers';
+import thunk from 'redux-thunk'
+
 import storageMiddleware from 'middlewares/storageMiddleware';
 import stateMiddleware from 'middlewares/stateMiddleware';
+
+import createReducer from './reducers';
 
 const {
   libraries: {
@@ -14,6 +17,7 @@ export default function configureStore() {
   const middlewares = [
     storageMiddleware((state) => state.settings), //Data saved to disk
     stateMiddleware((state) => state.ui), //Data saved to session
+    thunk,
   ];
   const enhancers = [applyMiddleware(...middlewares)];
 

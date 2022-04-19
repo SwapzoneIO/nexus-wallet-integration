@@ -1,14 +1,12 @@
-import * as TYPE from 'actions/types';
-
 import Input from '../input/input';
+import Dropdown from '../dropdown';
 import styles from './styles.module.scss';
-import CurrenciesList from '../currencies-list';
 
 const {
     libraries: {
       React,
       React: { useEffect, useState },
-      ReactRedux: { useSelector, useDispatch },
+      ReactRedux: { useSelector},
     },
     utilities: {
       apiCall,
@@ -18,36 +16,16 @@ const {
 const nextStep = 2
 
 function Exchange ({ toGo }) {
-  const [accounts, setAccounts] = useState([])
-  const [isClick, setDropdownVisible] = useState(false)
+  const [isClickAccounts, setDropdownAccountsVisible] = useState(false)
+  const [isClickCoins, setDropdownCoinsVisible] = useState(false)
 
-  const { fromAmount, fromAccount, toAmount} = useSelector(state => state.exchange.exchangeInfo)
-  const dispatch = useDispatch()
+  const { fromAccount, toAmount, accountsFrom, coinsList, toCoin } = useSelector(state => state.exchange.exchangeInfo)
 
-  useEffect(() => {
-    apiCall('users/list/accounts').then(accounts => {
-      setAccounts(accounts)
-      dispatch({
-        type: TYPE.UPDATE_FROM_ACCOUNT,
-        account: accounts[0],
-      })
-    })
-  }, [])
-
-  const handleDropdown = () => {
-    (isClick) ? setDropdownVisible(false) : setDropdownVisible(true)
+  const handleDropdownConins = () => {
+    (isClickCoins) ? setDropdownCoinsVisible(false) : setDropdownCoinsVisible(true)
   }
-  const handleAccount = (account) => {
-    dispatch({
-      type: TYPE.UPDATE_FROM_ACCOUNT,
-      account: account,
-    })
-    if (account.balance < fromAmount){
-      dispatch({
-        type: TYPE.UPDATE_FROM_AMOUNT,
-        amountFrom: account.balance,
-      })
-    }
+  const handleDropdownAccounts = () => {
+    (isClickAccounts) ? setDropdownAccountsVisible(false) : setDropdownAccountsVisible(true)
   }
   
   return (
@@ -58,21 +36,10 @@ function Exchange ({ toGo }) {
             {JSON.stringify(accounts, null, 2)}
           </p> */}
           <span>From</span>
-          <div className={styles.inform} onClick={handleDropdown} >
-            <span>Nexus ({fromAccount.name})</span>
+          <div className={styles.inform} onClick={handleDropdownAccounts}>
+            <span>{`Nexus (${fromAccount.name})`}</span>
             <span className={styles.amount}>{fromAccount.balance} {fromAccount.token_name}</span>
-            <ul className={(isClick) ? styles.dropdown : styles.hide}>
-            {(accounts.length) ? 
-              accounts.map(account => (
-                <li className={styles.dropdown__elem} onClick={() => handleAccount(account)}>
-                  <span>Nexus ({account.name})</span>
-                  <span className={styles.amount}>{account.balance} {account.token_name}</span>
-                </li> 
-              )) :
-              <li className={styles.dropdown__elem}>
-                <span>Accounts not found</span>
-              </li>}
-            </ul>
+            <Dropdown isClick={isClickAccounts} elements={accountsFrom} currencies={false}/>
           </div>
         </div>
         <div className={styles.columnImg}>
@@ -83,11 +50,11 @@ function Exchange ({ toGo }) {
         </div>
         <div className={styles.column}>
         <span>To</span>
-          <div className={styles.inform}>
-            <span>Etherium </span>
+          <div className={styles.inform} onClick={handleDropdownConins}>
+            <span>{toCoin}</span>
+            <Dropdown isClick={isClickCoins} elements={coinsList} currencies={true}/>
           </div>
         </div>
-          <CurrenciesList/>
       </div>
 
       <div className={styles.container}>

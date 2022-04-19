@@ -79,7 +79,7 @@
       position: relative;
       cursor: pointer;
 
-      &:after{
+      &__down:after{
         position: absolute;
         content: '';
         right: 20px;
@@ -88,29 +88,13 @@
         border-top: 6px solid $colorMenuGray;
       }
 
-      .dropdown{
-        width: 100%;
-        min-height: 40px;
-        max-height: 140px;
-        overflow-y: scroll;
-        padding: 0px;
-        list-style: none;
+      &__up:after{
         position: absolute;
-        top: 55px;
-        left: 0px;
-        background-color: $colorDarkBackground;
-
-        &__elem{
-          display: flex;
-          flex-direction: column;
-          padding: 10px 20px;
-          border-top: 1px solid #4D5256;
-
-          &:hover{
-            background-color: $colorBorderGray;
-          }
-        }
-
+        content: '';
+        right: 20px;
+        top: 30px;
+        border: 7px solid transparent; 
+        border-top: 6px solid $colorMenuGray;
       }
       span{
         font-size: 18px;
@@ -134,10 +118,6 @@
       line-height: 21px;
       color: #E4E4E4;
       height: 57px;
-    }
-
-    .hide{
-      display: none;
     }
   }
 }
