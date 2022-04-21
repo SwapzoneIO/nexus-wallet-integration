@@ -7,15 +7,13 @@ const {
   libraries: {
     React,
     React: { useState, useEffect },
-    ReactRedux: { useDispatch, useSelector },
+    ReactRedux: { useDispatch },
   },
 } = NEXUS;
 
 export default function Main() {
   const [step, setNumberStep] = useState(1)
   const [isNext, setNextStep] = useState(false)
-
-  const { coinsList } = useSelector(state => state.exchange.exchangeInfo)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -30,16 +28,10 @@ export default function Main() {
   }
 
   return (
-    <div className={styles.wrapper}>
-      <h2 className={styles.title}>Exchange with Swapzone</h2>
-      <div className={styles.pagination}>{step} of 3</div>  
-              
-      {/* <p>
-            {JSON.stringify(coinsList.title, null, 2)}
-          </p> */}
+    <div className={styles.wrapper}>              
       { !isNext ? 
-        <Exchange toGo={toGo} /> :
-        <Details toGo={toGo} />
+        <Exchange toGo={toGo} step={step} /> :
+        <Details toGo={toGo} step={step} />
       }
     </div>
   );

@@ -15,7 +15,7 @@ const {
 
 const nextStep = 2
 
-function Exchange ({ toGo }) {
+function Exchange ({ toGo, step }) {
   const [isClickAccounts, setDropdownAccountsVisible] = useState(false)
   const [isClickCoins, setDropdownCoinsVisible] = useState(false)
 
@@ -29,14 +29,18 @@ function Exchange ({ toGo }) {
   }
   
   return (
+    <>
+    <h2 className={styles.title}>Exchange with Swapzone</h2>
+    <div className={styles.pagination}>{step} of 3</div>
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <div className={styles.column}>
           {/* <p style={{ maxWidth: 600, overflowWrap: 'break-word' }}>
-            {JSON.stringify(bestRate, null, 2)}
+            {JSON.stringify(fromAccount.address, null, 2)}
           </p> */}
           <span>From</span>
           <div className={styles.inform} onClick={handleDropdownAccounts}>
+            <span className={(isClickAccounts) ? styles.inform__up : styles.inform__down}></span>
             <span>{`Nexus (${fromAccount.name})`}</span>
             <span className={styles.amount}>{fromAccount.balance} {fromAccount.token_name}</span>
             <Dropdown isClick={isClickAccounts} elements={accountsList} currencies={false}/>
@@ -51,6 +55,7 @@ function Exchange ({ toGo }) {
         <div className={styles.column}>
         <span>To</span>
           <div className={styles.inform} onClick={handleDropdownConins}>
+          <span className={(isClickCoins) ? styles.inform__up : styles.inform__down}></span>
             <span>{toCoin.title}</span>
             <Dropdown isClick={isClickCoins} elements={coinsList} currencies={true}/>
           </div>
@@ -88,6 +93,7 @@ function Exchange ({ toGo }) {
         <button onClick={() => toGo(nextStep, true)}>Exchange</button>
       </div>
     </div>
+    </>
   )
 }
 

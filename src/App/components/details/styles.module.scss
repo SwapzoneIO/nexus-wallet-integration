@@ -1,5 +1,35 @@
 @import '../../../styles/variables.scss';
 
+.title{
+    padding-top: 24px;
+    padding-bottom: 24px;
+    text-align: center;
+    font-family: "Sansation";
+    font-weight: 700;
+    font-size: 28px;
+    color: $colorBlue;
+    background: $colorDarkBackground;
+    display: flex;
+    justify-content: center;
+
+    .titleImg{
+      margin-left: 16px;
+      display: block;
+    }
+    .inProcess{
+      animation: moving 3s infinite linear;
+    }
+  }
+.pagination{
+  margin-top: 16px;
+  margin-bottom: 48px;
+  text-align: center;
+  font-family: 'Play';
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: $colorMenuGray;
+}
 .wrapper {
   width: 50%;
   margin: auto;
@@ -39,4 +69,8 @@ table{
         text-align: right;
         color: $colorTitleGray;
     }
+}
+
+@keyframes moving {
+  100% {transform: rotate(360deg);}
 }

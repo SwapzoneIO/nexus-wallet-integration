@@ -28,18 +28,20 @@ function Dropdown ({ isClick, elements, currencies }) {
                 from: "nxs",
                 to: elem.ticker,
                 queryId,
-            })))
+            }, partner)))
         } else {
             dispatch({
                 type: TYPE.UPDATE_FROM_ACCOUNT,
                 account: elem,
             })
-            if (elem.balance < fromAmount){
-                dispatch({
-                    type: TYPE.UPDATE_FROM_AMOUNT,
-                    amountFrom: elem.balance,
-                })
-            }
+            dispatch({
+                type: TYPE.UPDATE_RATE,
+                rate: 0,
+            })
+            dispatch({
+                type: TYPE.UPDATE_FROM_AMOUNT,
+                amountFrom: 0,
+            })
         }
     }
 

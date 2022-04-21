@@ -1,5 +1,25 @@
 @import '../../../styles/variables';
 
+.title{
+  padding-top: 24px;
+  padding-bottom: 24px;
+  text-align: center;
+  font-family: "Sansation";
+  font-weight: 700;
+  font-size: 28px;
+  color: $colorBlue;
+  background: $colorDarkBackground;
+}
+.pagination{
+  margin-top: 16px;
+  margin-bottom: 48px;
+  text-align: center;
+  font-family: 'Play';
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: $colorMenuGray;
+}
 .wrapper {
   width: 70%;
   margin: auto;
@@ -65,9 +85,9 @@
         position: absolute;
         content: '';
         right: 20px;
-        top: 30px;
+        top: 20px;
         border: 7px solid transparent; 
-        border-top: 6px solid $colorMenuGray;
+        border-bottom: 6px solid $colorMenuGray;
       }
       span{
         font-size: 18px;

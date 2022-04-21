@@ -18,7 +18,9 @@ const initialState = {
     ticker: ''
   },
   bestRate: 0,
-  partnersList: []
+  partnersList: [],
+  tx: '',
+  quotaId: '',
 };
 
 export default (state = initialState, action) => {
@@ -68,6 +70,18 @@ export default (state = initialState, action) => {
       return {
         ...state,
         partnersList: action.partners,
+      };
+    }
+    case TYPE.UPDATE_QUOTA_ID: {
+      return {
+        ...state,
+        quotaId: action.quotaId,
+      };
+    }
+    case TYPE.SAVE_TRANSACTION: {
+      return {
+        ...state,
+        tx: action.tx,
       };
     }
     default:
@@ -124,7 +138,7 @@ export const fetchPartners = async (dispatch) => {
   })
 }
 
-export const fetchRate = (params) => async (dispatch, getState) => {
+export const fetchRate = (params, partner) => async (dispatch, getState) => {
   const { data: response } = await api.get('/v1/exchange/rate', { params })
   const { exchange } = getState()
   const { exchangeInfo } = exchange
@@ -135,5 +149,33 @@ export const fetchRate = (params) => async (dispatch, getState) => {
       type: TYPE.UPDATE_RATE,
       rate: Number(response.rate),
     })
+    dispatch({
+      type: TYPE.UPDATE_QUOTA_ID,
+      quotaId: partner.quotaId,
+    })
+  }
+}
+
+export const createTransaction = () => async (dispatch, getState) => {
+  const { exchange } = getState()
+  const { exchangeInfo } = exchange
+  const { quotaId, toCoin, bestRate, fromAccount, toAddress } = exchangeInfo
+
+  try {
+    const response = await api.post('/v1/exchange/create', { 
+      quotaId,
+      to: toCoin.ticker,
+      from: 'nxs',
+      amountDeposit: bestRate,
+      refundAddress: fromAccount.address,
+      addressReceive: toAddress,
+    })
+
+    dispatch({ 
+      type: TYPE.SAVE_TRANSACTION, 
+      tx: response.data
+    })
+    
+  } catch (ignore) {
   }
 }

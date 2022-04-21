@@ -1,3 +1,4 @@
+import { fetchRate } from 'reducers/exchange/exchangeInfo';
 import * as TYPE from 'actions/types';
 
 const {
@@ -11,16 +12,15 @@ const MIN_WHOLE_LENGTH = 12
 
 
 function Input ({ value, type }) {
-  const { fromAccount: { balance }, partnersList } = useSelector(state => state.exchange.exchangeInfo)
+  const queryId = new Date().getTime().toString()
+  const { fromAccount: { balance }, partnersList, toCoin } = useSelector(state => state.exchange.exchangeInfo)
   const dispatch = useDispatch()
 
   const updateAmount = (evt) => {
     if (type === 'amount'){
       const value = evt.target.value.trim().replace(/^0+/, '0').replace(',', '.')
 
-      if (isNaN(value) || !checkAmountLength(value) || Number(value) < 0 
-      // || Number(value) > Number(balance)
-      ) {
+      if (isNaN(value) || !balance || !checkAmountLength(value) || Number(value) < 0 || Number(value) > Number(balance)) {
         return
       }
 
@@ -32,7 +32,13 @@ function Input ({ value, type }) {
         type: TYPE.UPDATE_FROM_AMOUNT,
         amountFrom: value,
       })
-
+      partnersList.forEach(partner => dispatch(fetchRate({
+        partner: partner.id,
+        amount: value,
+        from: "nxs",
+        to: toCoin.ticker,
+        queryId,
+      }, partner)))
 
     } else if (type === 'address'){
       dispatch({
