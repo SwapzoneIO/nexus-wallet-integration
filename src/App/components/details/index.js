@@ -9,7 +9,7 @@ const {
   } = NEXUS;
 
 function Details ({ toGo }) {
-    const { fromAmount, fromAccount, toAmount, toAddress, toCoin } = useSelector(state => state.exchange.exchangeInfo)
+    const { fromAmount, fromAccount, bestRate, toAddress, toCoin } = useSelector(state => state.exchange.exchangeInfo)
 
     return (
         <div className={styles.wrapper}>
@@ -27,7 +27,7 @@ function Details ({ toGo }) {
                 <tr>
                     <td className={styles.left}>To</td>
                     <td className={styles.right}>
-                        <span>{toCoin}</span>
+                        <span>{toCoin.title}</span>
                         <span className={styles.address}>{toAddress}</span>
                     </td>
                 </tr>
@@ -37,7 +37,7 @@ function Details ({ toGo }) {
                 </tr>
                 <tr>
                     <td className={styles.left}>Will receive</td>
-                    <td className={styles.right}>{toAmount}</td>
+                    <td className={styles.right}>{bestRate} {toCoin.ticker}</td>
                 </tr>
             </table>
             <Button toGo={toGo}/>

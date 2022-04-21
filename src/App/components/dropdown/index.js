@@ -1,6 +1,7 @@
+import { fetchRate } from 'reducers/exchange/exchangeInfo';
+
 import * as TYPE from 'actions/types';
 import styles from './styles.module.scss';
-// import onClickOutside from 'react-onclickoutside'
 
 const {
     libraries: {
@@ -10,21 +11,30 @@ const {
   } = NEXUS;
 
 function Dropdown ({ isClick, elements, currencies }) {
-    const { fromAmount } = useSelector(state => state.exchange.exchangeInfo)
+    const queryId = new Date().getTime().toString()
+
+    const { fromAmount, partnersList } = useSelector(state => state.exchange.exchangeInfo)
     const dispatch = useDispatch()
 
-    const handleAccount = (elem) => {
+    const handleElement = (elem) => {
         if (currencies){
             dispatch({
                 type: TYPE.UPDATE_TO_COIN,
                 coin: elem,
             })
+            partnersList.forEach(partner => dispatch(fetchRate({
+                partner: partner.id,
+                amount: fromAmount,
+                from: "nxs",
+                to: elem.ticker,
+                queryId,
+            })))
         } else {
             dispatch({
                 type: TYPE.UPDATE_FROM_ACCOUNT,
                 account: elem,
-                })
-                if (elem.balance < fromAmount){
+            })
+            if (elem.balance < fromAmount){
                 dispatch({
                     type: TYPE.UPDATE_FROM_AMOUNT,
                     amountFrom: elem.balance,
@@ -37,8 +47,8 @@ function Dropdown ({ isClick, elements, currencies }) {
         <ul className={(isClick) ? styles.dropdown : styles.hide}>
             {(elements.length) ? 
             elements.map(elem => (
-            <li className={styles.dropdown__elem} onClick={() => handleAccount(elem)}>
-                {(elem.name) ? <span>{`Nexus (${elem.name})`}</span> : <span>{elem}</span>}
+            <li className={styles.dropdown__elem} onClick={() => handleElement(elem)}>
+                {(elem.name) ? <span>{`Nexus (${elem.name})`}</span> : <span>{elem.title}</span>}
                 <span className={styles.amount}>{elem.balance} {elem.token_name}</span>
             </li> 
             )) :

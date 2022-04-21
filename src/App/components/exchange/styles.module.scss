@@ -1,32 +1,5 @@
 @import '../../../styles/variables';
 
-.skeleton {
-  display: inline-block;
-  position: relative;
-  top: 5px;
-  left: 10px;
-  border-radius: 100px;
-  background: #232324;
-  height: 20px;
-  overflow: hidden;
-  width: 40%;
-  animation: move-light 1s ease-in infinite;
-}
-
-@keyframes move-light {
-  0% {
-    background: rgb(35, 35, 36);
-  }
-
-  50% {
-    background: rgba(35, 35, 36, 0.3);
-  }
-
-  100% {
-    background: rgb(35, 35, 36);
-  }
-}
-
 .wrapper {
   width: 70%;
   margin: auto;

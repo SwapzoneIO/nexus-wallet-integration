@@ -5,7 +5,7 @@ import styles from './styles.module.scss';
 const {
     libraries: {
       React,
-      React: { useEffect, useState },
+      React: { useState },
       ReactRedux: { useSelector},
     },
     utilities: {
@@ -19,7 +19,7 @@ function Exchange ({ toGo }) {
   const [isClickAccounts, setDropdownAccountsVisible] = useState(false)
   const [isClickCoins, setDropdownCoinsVisible] = useState(false)
 
-  const { fromAccount, toAmount, accountsFrom, coinsList, toCoin } = useSelector(state => state.exchange.exchangeInfo)
+  const { fromAmount, fromAccount, accountsList, coinsList, toCoin, toAddress, bestRate } = useSelector(state => state.exchange.exchangeInfo)
 
   const handleDropdownConins = () => {
     (isClickCoins) ? setDropdownCoinsVisible(false) : setDropdownCoinsVisible(true)
@@ -33,13 +33,13 @@ function Exchange ({ toGo }) {
       <div className={styles.container}>
         <div className={styles.column}>
           {/* <p style={{ maxWidth: 600, overflowWrap: 'break-word' }}>
-            {JSON.stringify(accounts, null, 2)}
+            {JSON.stringify(bestRate, null, 2)}
           </p> */}
           <span>From</span>
           <div className={styles.inform} onClick={handleDropdownAccounts}>
             <span>{`Nexus (${fromAccount.name})`}</span>
             <span className={styles.amount}>{fromAccount.balance} {fromAccount.token_name}</span>
-            <Dropdown isClick={isClickAccounts} elements={accountsFrom} currencies={false}/>
+            <Dropdown isClick={isClickAccounts} elements={accountsList} currencies={false}/>
           </div>
         </div>
         <div className={styles.columnImg}>
@@ -51,7 +51,7 @@ function Exchange ({ toGo }) {
         <div className={styles.column}>
         <span>To</span>
           <div className={styles.inform} onClick={handleDropdownConins}>
-            <span>{toCoin}</span>
+            <span>{toCoin.title}</span>
             <Dropdown isClick={isClickCoins} elements={coinsList} currencies={true}/>
           </div>
         </div>
@@ -60,14 +60,14 @@ function Exchange ({ toGo }) {
       <div className={styles.container}>
         <div className={styles.column}>
           <span>Amount</span>
-          <Input type='amount' />
+          <Input value={fromAmount} type="amount"/>
         </div>
       </div>
 
       <div className={styles.container}>
         <div className={styles.column}>
           <span>Address to receive</span>
-          <Input type='address' />
+          <Input value={toAddress} type="address"/>
         </div>
       </div>
 
@@ -79,7 +79,7 @@ function Exchange ({ toGo }) {
         <div className={styles.item}>
           <span>Receive</span>
           <span className={styles.amount}>
-            {toAmount}
+            {bestRate} {toCoin.ticker}
           </span>
         </div>
       </div>

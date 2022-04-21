@@ -10,15 +10,17 @@ const {
 const MIN_WHOLE_LENGTH = 12
 
 
-function Input ({type}) {
-  const { fromAmount, fromAccount: { balance }, toAddress } = useSelector(state => state.exchange.exchangeInfo)
+function Input ({ value, type }) {
+  const { fromAccount: { balance }, partnersList } = useSelector(state => state.exchange.exchangeInfo)
   const dispatch = useDispatch()
 
   const updateAmount = (evt) => {
     if (type === 'amount'){
       const value = evt.target.value.trim().replace(/^0+/, '0').replace(',', '.')
 
-      if (isNaN(value) || !checkAmountLength(value) || Number(value) < 0 || Number(value) > Number(balance)) {
+      if (isNaN(value) || !checkAmountLength(value) || Number(value) < 0 
+      // || Number(value) > Number(balance)
+      ) {
         return
       }
 
@@ -30,13 +32,14 @@ function Input ({type}) {
         type: TYPE.UPDATE_FROM_AMOUNT,
         amountFrom: value,
       })
+
+
     } else if (type === 'address'){
       dispatch({
         type: TYPE.UPDATE_TO_ADDRESS,
         address: evt.target.value,
       })
     }
-
   }
 
   const checkAmountLength = (value) => {
@@ -49,15 +52,10 @@ function Input ({type}) {
     return whole.length <= MIN_WHOLE_LENGTH
   }
 
-  if (type === 'amount'){
-    return (
-      <input type="text" value={fromAmount} onChange={updateAmount}/>
-    )
-  } else if (type === 'address'){
-    return (
-      <input type="text" value={toAddress} onChange={updateAmount}/>
-    )
-  }
+
+  return (
+    <input type="text" value={value} onChange={updateAmount}/>
+  )
 }
 
 export default Input

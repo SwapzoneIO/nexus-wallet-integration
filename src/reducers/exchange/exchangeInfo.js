@@ -1,5 +1,4 @@
 import axios from 'axios'
-// import getConfig from 'next/config'
 import * as TYPE from 'actions/types';
 
 const {
@@ -11,11 +10,15 @@ const {
 const initialState = {
   fromAmount: 0,
   fromAccount: {},
-  accountsFrom: [],
-  toAmount: 0,
   toAddress: '',
-  toCoin: '',
-  coinsList: [],
+  toCoin: {},
+  accountsList: [],
+  coinsList: {
+    title: '',
+    ticker: ''
+  },
+  bestRate: 0,
+  partnersList: []
 };
 
 export default (state = initialState, action) => {
@@ -24,12 +27,6 @@ export default (state = initialState, action) => {
       return {  
         ...state,
         fromAmount: action.amountFrom,
-      };
-    }
-    case TYPE.UPDATE_TO_AMOUNT: {
-      return {
-        ...state,
-        toAmount: action.amountTo,
       };
     }
     case TYPE.UPDATE_FROM_ACCOUNT: {
@@ -47,7 +44,7 @@ export default (state = initialState, action) => {
     case TYPE.UPDATE_ACCOUNTS: {
       return {
         ...state,
-        accountsFrom: action.accounts,
+        accountsList: action.accounts,
       };
     }
     case TYPE.UPDATE_COINS: {
@@ -62,7 +59,17 @@ export default (state = initialState, action) => {
         toCoin: action.coin,
       };
     }
-
+    case TYPE.UPDATE_RATE: {
+      return {
+        ...state,
+        bestRate: action.rate,
+    }}
+    case TYPE.UPDATE_PARTNERS: {
+      return {
+        ...state,
+        partnersList: action.partners,
+      };
+    }
     default:
       return state;
   }
@@ -81,8 +88,6 @@ export const fetchAccounts = async (dispatch) => {
   })
 }
 
-// const { publicRuntimeConfig } = getConfig()
-
 const api = axios.create({
   baseURL: 'https://api.swapzone.io',
   headers: {
@@ -94,15 +99,41 @@ export const fetchCoins = async (dispatch) => {
   const { data: response } = await api.get('/v1/internal/get-currencies')
 
   const resModify =  Object.values(response).map(values => {
-    return values.map(coin => coin.title)
+    return values.map(coin => ({
+      title: coin.title,
+      ticker: coin.ticker,
+    }))
   }).reduce((acc, nextCoin) => acc.concat(nextCoin))
 
   dispatch({
     type: TYPE.UPDATE_COINS,
-    coins: resModify,
+    coins: resModify
   })
   dispatch({
     type: TYPE.UPDATE_TO_COIN,
     coin: resModify[0],
   })
+}
+
+export const fetchPartners = async (dispatch) => {
+  const { data: response } = await api.get(`/v1/internal/partners?supported=true`)
+
+  dispatch({
+    type: TYPE.UPDATE_PARTNERS,
+    partners: response.partners,
+  })
+}
+
+export const fetchRate = (params) => async (dispatch, getState) => {
+  const { data: response } = await api.get('/v1/exchange/rate', { params })
+  const { exchange } = getState()
+  const { exchangeInfo } = exchange
+  const { bestRate } = exchangeInfo
+
+  if (response.rate && Number(response.rate) > bestRate) {
+    dispatch({
+      type: TYPE.UPDATE_RATE,
+      rate: Number(response.rate),
+    })
+  }
 }

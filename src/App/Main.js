@@ -1,4 +1,4 @@
-import { fetchAccounts, fetchCoins } from 'reducers/exchange/exchangeInfo';
+import { fetchAccounts, fetchCoins, fetchPartners } from 'reducers/exchange/exchangeInfo';
 import Details from './components/details';
 import Exchange from './components/exchange';
 import styles from './styles.module.scss'
@@ -9,9 +9,6 @@ const {
     React: { useState, useEffect },
     ReactRedux: { useDispatch, useSelector },
   },
-  utilities: {
-    apiCall,
-  }
 } = NEXUS;
 
 export default function Main() {
@@ -24,6 +21,7 @@ export default function Main() {
   useEffect(() => {
     dispatch(fetchAccounts)
     dispatch(fetchCoins)
+    dispatch(fetchPartners)
   }, [])
 
   const toGo = (nextStep, isNext) => {
@@ -36,8 +34,8 @@ export default function Main() {
       <h2 className={styles.title}>Exchange with Swapzone</h2>
       <div className={styles.pagination}>{step} of 3</div>  
               
-      {/* <p style={{ maxWidth: 600, overflowWrap: 'break-word' }}>
-            {JSON.stringify(coinsList, null, 2)}
+      {/* <p>
+            {JSON.stringify(coinsList.title, null, 2)}
           </p> */}
       { !isNext ? 
         <Exchange toGo={toGo} /> :
