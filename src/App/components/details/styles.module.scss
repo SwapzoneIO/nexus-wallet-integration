@@ -1,8 +1,12 @@
 @import '../../../styles/variables.scss';
 
+@keyframes moving {
+  100% {transform: rotate(360deg);}
+}
+
 .title{
     padding-top: 24px;
-    padding-bottom: 24px;
+    padding-bottom: 20px;
     text-align: center;
     font-family: "Sansation";
     font-weight: 700;
@@ -69,8 +73,4 @@ table{
         text-align: right;
         color: $colorTitleGray;
     }
-}
-
-@keyframes moving {
-  100% {transform: rotate(360deg);}
 }

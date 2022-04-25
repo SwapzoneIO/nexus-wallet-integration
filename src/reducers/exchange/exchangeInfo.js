@@ -4,10 +4,12 @@ import * as TYPE from 'actions/types';
 const {
   utilities: {
     apiCall,
+    sendNXS
   }
 } = NEXUS;
 
 const initialState = {
+  isLoading: false,
   fromAmount: 0,
   fromAccount: {},
   toAddress: '',
@@ -25,6 +27,12 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case TYPE.IS_LOADING: {
+      return {  
+        ...state,
+        isLoading: action.isLoading,
+      };
+    }
     case TYPE.UPDATE_FROM_AMOUNT: {
       return {  
         ...state,
@@ -151,7 +159,7 @@ export const fetchRate = (params, partner) => async (dispatch, getState) => {
     })
     dispatch({
       type: TYPE.UPDATE_QUOTA_ID,
-      quotaId: partner.quotaId,
+      quotaId: partner,
     })
   }
 }
@@ -159,23 +167,35 @@ export const fetchRate = (params, partner) => async (dispatch, getState) => {
 export const createTransaction = () => async (dispatch, getState) => {
   const { exchange } = getState()
   const { exchangeInfo } = exchange
-  const { quotaId, toCoin, bestRate, fromAccount, toAddress } = exchangeInfo
+  const { quotaId, toCoin, fromAmount, fromAccount, toAddress } = exchangeInfo
 
   try {
     const response = await api.post('/v1/exchange/create', { 
-      quotaId,
+      quotaId: quotaId.quotaId,
       to: toCoin.ticker,
       from: 'nxs',
-      amountDeposit: bestRate,
+      amountDeposit: fromAmount,
       refundAddress: fromAccount.address,
       addressReceive: toAddress,
     })
 
     dispatch({ 
       type: TYPE.SAVE_TRANSACTION, 
-      tx: response.data
+      tx: response.data.transaction
     })
-    
+
+    // const sendTransaction = await sendNXS([
+    // {
+    //   address: '2S5hQ1PBUNKeJUBt4rLtz1vVRovRXxy8eafircdrSURRfjh9o3f',
+    //   address: response.data.transaction.addressReceive
+    //   amount: response.data.transaction.amount
+    // }]);
+
+    dispatch({ 
+      type: TYPE.IS_LOADING, 
+      isLoading: sendTransaction
+    })
+
   } catch (ignore) {
   }
 }

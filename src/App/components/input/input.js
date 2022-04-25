@@ -20,7 +20,8 @@ function Input ({ value, type }) {
     if (type === 'amount'){
       const value = evt.target.value.trim().replace(/^0+/, '0').replace(',', '.')
 
-      if (isNaN(value) || !balance || !checkAmountLength(value) || Number(value) < 0 || Number(value) > Number(balance)) {
+      if (isNaN(value) || !balance || !checkAmountLength(value) || Number(value) < 0 ) {
+        // || Number(value) > Number(balance)
         return
       }
 
@@ -32,7 +33,7 @@ function Input ({ value, type }) {
         type: TYPE.UPDATE_FROM_AMOUNT,
         amountFrom: value,
       })
-      partnersList.forEach(partner => dispatch(fetchRate({
+      partnersList.forEach((partner, index) => dispatch(fetchRate({
         partner: partner.id,
         amount: value,
         from: "nxs",

@@ -19,7 +19,7 @@ function Exchange ({ toGo, step }) {
   const [isClickAccounts, setDropdownAccountsVisible] = useState(false)
   const [isClickCoins, setDropdownCoinsVisible] = useState(false)
 
-  const { fromAmount, fromAccount, accountsList, coinsList, toCoin, toAddress, bestRate } = useSelector(state => state.exchange.exchangeInfo)
+  const { fromAmount, fromAccount, accountsList, coinsList, toCoin, toAddress, bestRate, isLoading, partnersList } = useSelector(state => state.exchange.exchangeInfo)
 
   const handleDropdownConins = () => {
     (isClickCoins) ? setDropdownCoinsVisible(false) : setDropdownCoinsVisible(true)
@@ -36,7 +36,7 @@ function Exchange ({ toGo, step }) {
       <div className={styles.container}>
         <div className={styles.column}>
           {/* <p style={{ maxWidth: 600, overflowWrap: 'break-word' }}>
-            {JSON.stringify(fromAccount.address, null, 2)}
+            {JSON.stringify(isLoading, null, 2)}
           </p> */}
           <span>From</span>
           <div className={styles.inform} onClick={handleDropdownAccounts}>

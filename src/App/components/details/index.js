@@ -1,7 +1,7 @@
 import { createTransaction } from 'reducers/exchange/exchangeInfo';
 import axios from 'axios';
-import * as TYPE from 'actions/types';
 
+import StatusLine from '../statusTransaction';
 import Button from '../button';
 import styles from './styles.module.scss';
 
@@ -11,7 +11,9 @@ const {
       React: { useState },
       ReactRedux: { useSelector, useDispatch },
     },
-
+    utilities: {
+        sendNXS
+      }
   } = NEXUS;
 
   const api = axios.create({
@@ -22,12 +24,12 @@ const {
     })
 
 function Details ({ toGo, step }) {
-    let isActiveButton = false
-    const { fromAmount, fromAccount, bestRate, toAddress, toCoin, tx } = useSelector(state => state.exchange.exchangeInfo)
+    let isDisabledButton = true
+    const { fromAmount, fromAccount, bestRate, toAddress, toCoin, tx, quotaId, isLoading } = useSelector(state => state.exchange.exchangeInfo)
     const dispatch = useDispatch()
 
     if (toCoin.ticker && Number(bestRate) > 0 && fromAccount.address && toAddress){
-        isActiveButton = true
+        isDisabledButton = false
     }
 
     const handleSubmit = async () => {
@@ -81,10 +83,23 @@ function Details ({ toGo, step }) {
                     <td className={styles.right}>{bestRate} {toCoin.ticker}</td>
                 </tr>
             </table>
+            {step === 3 ? <StatusLine/> : null}
             <p>
                 {JSON.stringify(tx, null, 2)}
             </p>
-            <Button toGo={toGo} handleSubmit={handleSubmit} isActive={isActiveButton}/>
+            {/* <p>
+                {JSON.stringify(isLoading, null, 2)}
+            </p> */}
+            <pre>
+            quotaId: {quotaId.id} ticker:{toCoin.ticker} fromAmount:{fromAmount}
+            </pre>
+            <pre>
+            from:{fromAccount.address}
+            </pre>
+            <pre>
+            to:{toAddress}
+            </pre>
+            <Button toGo={toGo} handleSubmit={handleSubmit} isDisabled={isDisabledButton}/>
         </div>
         </>
     )

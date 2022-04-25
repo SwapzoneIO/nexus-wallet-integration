@@ -22,7 +22,11 @@ function Dropdown ({ isClick, elements, currencies }) {
                 type: TYPE.UPDATE_TO_COIN,
                 coin: elem,
             })
-            partnersList.forEach(partner => dispatch(fetchRate({
+            dispatch({
+                type: TYPE.IS_LOADING,
+                isLoading: true
+              })
+            partnersList.forEach((partner) => dispatch(fetchRate({
                 partner: partner.id,
                 amount: fromAmount,
                 from: "nxs",
@@ -34,14 +38,14 @@ function Dropdown ({ isClick, elements, currencies }) {
                 type: TYPE.UPDATE_FROM_ACCOUNT,
                 account: elem,
             })
-            dispatch({
-                type: TYPE.UPDATE_RATE,
-                rate: 0,
-            })
-            dispatch({
-                type: TYPE.UPDATE_FROM_AMOUNT,
-                amountFrom: 0,
-            })
+            // dispatch({
+            //     type: TYPE.UPDATE_RATE,
+            //     rate: 0,
+            // })
+            // dispatch({
+            //     type: TYPE.UPDATE_FROM_AMOUNT,
+            //     amountFrom: 0,
+            // })
         }
     }
 

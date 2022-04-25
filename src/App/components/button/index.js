@@ -10,7 +10,7 @@ const {
 const backStep = 1
 const nextStep = 3
 
-function Button ({ toGo, handleSubmit, isActive }) {
+function Button ({ toGo, handleSubmit, isDisabled }) {
     const [isNext, setNextStep] = useState(false)
 
     if (!isNext){
@@ -29,23 +29,22 @@ function Button ({ toGo, handleSubmit, isActive }) {
                 
                 <div className={styles.buttonContainer}>
                     <button 
-                        // disabled={`${(isActive) ? '' : "disabled"}`}
+                        // disabled={(isDisabled)}
                         onClick={() => {
                             handleSubmit()
                             setNextStep(true)
                             toGo(nextStep, true)
-                            }} >Confirm</button>
+                        }} >Confirm</button>
                 </div>
             </div>
         )
     } 
-    else {
-        return (
-            <div className={styles.container}>
-                <a className={styles.step3} href="/">To my wallets</a>
-            </div>
-        )
-    }
+    return (
+        <div className={styles.container}>
+            <a className={styles.step3} href="/">To my wallets</a>
+        </div>
+    )
+    
 }
 
 export default Button
