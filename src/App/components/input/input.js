@@ -10,7 +10,6 @@ const {
 
 const MIN_WHOLE_LENGTH = 12
 
-
 function Input ({ value, type }) {
   const queryId = new Date().getTime().toString()
   const { fromAccount: { balance }, partnersList, toCoin } = useSelector(state => state.exchange.exchangeInfo)
@@ -20,8 +19,8 @@ function Input ({ value, type }) {
     if (type === 'amount'){
       const value = evt.target.value.trim().replace(/^0+/, '0').replace(',', '.')
 
-      if (isNaN(value) || !balance || !checkAmountLength(value) || Number(value) < 0 ) {
-        // || Number(value) > Number(balance)
+      if (isNaN(value) || !balance || !checkAmountLength(value) || Number(value) < 0 || Number(value) > Number(balance)
+      ) {
         return
       }
 
@@ -45,6 +44,10 @@ function Input ({ value, type }) {
       dispatch({
         type: TYPE.UPDATE_TO_ADDRESS,
         address: evt.target.value,
+      })
+      dispatch({
+        type: TYPE.SAVE_TRANSACTION,
+        tx: '',
       })
     }
   }

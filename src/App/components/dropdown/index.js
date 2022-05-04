@@ -38,14 +38,14 @@ function Dropdown ({ isClick, elements, currencies }) {
                 type: TYPE.UPDATE_FROM_ACCOUNT,
                 account: elem,
             })
-            // dispatch({
-            //     type: TYPE.UPDATE_RATE,
-            //     rate: 0,
-            // })
-            // dispatch({
-            //     type: TYPE.UPDATE_FROM_AMOUNT,
-            //     amountFrom: 0,
-            // })
+            dispatch({
+                type: TYPE.UPDATE_RATE,
+                rate: 0,
+            })
+            dispatch({
+                type: TYPE.UPDATE_FROM_AMOUNT,
+                amountFrom: 0,
+            })
         }
     }
 

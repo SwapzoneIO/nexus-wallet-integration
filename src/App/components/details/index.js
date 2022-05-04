@@ -8,29 +8,13 @@ import styles from './styles.module.scss';
 const {
     libraries: {
       React,
-      React: { useState },
       ReactRedux: { useSelector, useDispatch },
     },
-    utilities: {
-        sendNXS
-      }
   } = NEXUS;
 
-  const api = axios.create({
-    baseURL: 'https://api.swapzone.io',
-    headers: {
-        'x-api-key': 'DoZLClkWE',
-    },
-    })
-
 function Details ({ toGo, step }) {
-    let isDisabledButton = true
-    const { fromAmount, fromAccount, bestRate, toAddress, toCoin, tx, quotaId, isLoading } = useSelector(state => state.exchange.exchangeInfo)
+    const { fromAmount, fromAccount, bestRate, toAddress, toCoin, tx } = useSelector(state => state.exchange.exchangeInfo)
     const dispatch = useDispatch()
-
-    if (toCoin.ticker && Number(bestRate) > 0 && fromAccount.address && toAddress){
-        isDisabledButton = false
-    }
 
     const handleSubmit = async () => {
         await dispatch(createTransaction())
@@ -85,12 +69,9 @@ function Details ({ toGo, step }) {
             </table>
             {step === 3 ? <StatusLine/> : null}
             <p>
-                {JSON.stringify(tx, null, 2)}
+                {JSON.stringify(tx.id)}
             </p>
-            {/* <p>
-                {JSON.stringify(isLoading, null, 2)}
-            </p> */}
-            <pre>
+            {/* <pre>
             quotaId: {quotaId.id} ticker:{toCoin.ticker} fromAmount:{fromAmount}
             </pre>
             <pre>
@@ -98,8 +79,8 @@ function Details ({ toGo, step }) {
             </pre>
             <pre>
             to:{toAddress}
-            </pre>
-            <Button toGo={toGo} handleSubmit={handleSubmit} isDisabled={isDisabledButton}/>
+            </pre> */}
+            <Button toGo={toGo} handleSubmit={handleSubmit}/>
         </div>
         </>
     )

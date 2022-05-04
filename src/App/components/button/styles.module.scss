@@ -36,8 +36,20 @@
     .backButton{
         background: none;
         display: flex;
-        align-self: center;
+        align-self: flex-start;
         width: 50%;
         margin-right: 10px;
+    }
+    .error {
+        font-size: 14px;
+        line-height: 16px;
+        color: #E8168D;
+        margin-top: 16px;
+        display: flex;
+        align-items: flex-start;
+
+        span {
+            margin-left: 16px;
+        }
     }
 }

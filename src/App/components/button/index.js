@@ -3,15 +3,24 @@ import styles from './styles.module.scss';
 const {
     libraries: {
       React,
-      React: { useState },
+      React: { useState, useEffect },
+      ReactRedux: { useSelector },
     },
   } = NEXUS;
 
 const backStep = 1
 const nextStep = 3
 
-function Button ({ toGo, handleSubmit, isDisabled }) {
+function Button ({ toGo, handleSubmit}) {
+    const { tx } = useSelector(state => state.exchange.exchangeInfo)
     const [isNext, setNextStep] = useState(false)
+
+    useEffect(() => {
+        if (tx.id) { 
+            setNextStep(true)
+            toGo(nextStep, true)
+        }
+    }, [tx])
 
     if (!isNext){
         return (
@@ -29,19 +38,29 @@ function Button ({ toGo, handleSubmit, isDisabled }) {
                 
                 <div className={styles.buttonContainer}>
                     <button 
-                        // disabled={(isDisabled)}
-                        onClick={() => {
+                        onClick={ () => {
                             handleSubmit()
-                            setNextStep(true)
-                            toGo(nextStep, true)
                         }} >Confirm</button>
+
+                    {tx.error &&
+                    <div className={styles.error}>
+                        <svg width="17" height="15" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.78365 0.720686C9.23147 -0.240229 7.76854 -0.240228 7.21636 0.720686L0.178265 12.9685C-0.348618 13.8854 0.355674 15 1.46192 15H15.5382C16.6443 15 17.3487 13.8854 16.8217 12.9685L9.78365 0.720686ZM9.376 5.02329C9.376 4.64329 9.04921 4.33524 8.64607 4.33524H8.3541C7.95097 4.33524 7.62416 4.64329 7.62416 5.02329V9.76744C7.62416 10.1475 7.95097 10.4555 8.3541 10.4555H8.64607C9.0492 10.4555 9.376 10.1475 9.376 9.76744V5.02329ZM9.376 12.2117C9.376 11.8317 9.04921 11.5237 8.64607 11.5237H8.3541C7.95097 11.5237 7.62416 11.8317 7.62416 12.2117V12.2478C7.62416 12.6277 7.95097 12.9358 8.3541 12.9358H8.64607C9.0492 12.9358 9.376 12.6277 9.376 12.2478V12.2117Z" fill="#E8168D"/>
+                        </svg>
+                        <span> Address receive is incorrect. <br/>
+                        Try another address.</span>
+                    </div>}
                 </div>
             </div>
+            
         )
     } 
     return (
         <div className={styles.container}>
-            <a className={styles.step3} href="/">To my wallets</a>
+            <button className={styles.step3} 
+                    onClick={() => toGo(backStep, false)}>
+                <span>To my wallets</span>
+            </button>
         </div>
     )
     

@@ -4,6 +4,7 @@ import * as TYPE from 'actions/types';
 const {
   utilities: {
     apiCall,
+    secureApiCall,
     sendNXS
   }
 } = NEXUS;
@@ -152,6 +153,11 @@ export const fetchRate = (params, partner) => async (dispatch, getState) => {
   const { exchangeInfo } = exchange
   const { bestRate } = exchangeInfo
 
+  dispatch({ 
+    type: TYPE.IS_LOADING, 
+    isLoading: response
+  })
+
   if (response.rate && Number(response.rate) > bestRate) {
     dispatch({
       type: TYPE.UPDATE_RATE,
@@ -179,22 +185,64 @@ export const createTransaction = () => async (dispatch, getState) => {
       addressReceive: toAddress,
     })
 
-    dispatch({ 
-      type: TYPE.SAVE_TRANSACTION, 
-      tx: response.data.transaction
-    })
+    if (response.data.transaction) {
+      dispatch({ 
+        type: TYPE.SAVE_TRANSACTION, 
+        tx: response.data.transaction
+      })
+    } else {
+      dispatch({ 
+        type: TYPE.SAVE_TRANSACTION, 
+        tx: response.data
+      })
+    }
 
     // const sendTransaction = await sendNXS([
     // {
     //   address: '2S5hQ1PBUNKeJUBt4rLtz1vVRovRXxy8eafircdrSURRfjh9o3f',
-    //   address: response.data.transaction.addressReceive
-    //   amount: response.data.transaction.amount
-    // }]);
+      // address: response.data.transaction.addressReceive,
+    //   amount: 250
+    // }])
+    // .then(result => {
+    //         dispatch({ 
+    //           type: TYPE.IS_LOADING, 
+    //           isLoading: result
+    //         })
+    //       })
+    //       .catch(err => {
+    //         dispatch({ 
+    //           type: TYPE.IS_LOADING, 
+    //           isLoading: err
+    //         })
+    //       })
 
-    dispatch({ 
-      type: TYPE.IS_LOADING, 
-      isLoading: sendTransaction
-    })
+    // dispatch({ 
+    //   type: TYPE.IS_LOADING, 
+    //   isLoading: sendTransaction
+    // })
+
+  //   await secureApiCall(`/finance/debit/artillar`, {
+  //     "pin": "4687775983255942",
+  //     "recipients" :
+  //     [
+  //         {
+  //             "address_to": response.data.transaction.addressReceive,
+  //             "amount": response.data.transaction.amount
+  //         }
+  //     ]
+  // })
+  //     .then(result => {
+  //       dispatch({ 
+  //         type: TYPE.IS_LOADING, 
+  //         isLoading: result
+  //       })
+  //     })
+  //     .catch(err => {
+  //       dispatch({ 
+  //         type: TYPE.IS_LOADING, 
+  //         isLoading: err
+  //       })
+  //     })
 
   } catch (ignore) {
   }
