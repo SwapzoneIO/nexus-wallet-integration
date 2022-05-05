@@ -13,7 +13,7 @@ const {
   } = NEXUS;
 
 function Details ({ toGo, step }) {
-    const { fromAmount, fromAccount, bestRate, toAddress, toCoin, tx } = useSelector(state => state.exchange.exchangeInfo)
+    const { fromAmount, fromAccount, bestRate, toAddress, toCoin, tx, partner } = useSelector(state => state.exchange.exchangeInfo)
     const dispatch = useDispatch()
 
     const handleSubmit = async () => {
@@ -72,13 +72,7 @@ function Details ({ toGo, step }) {
                 {JSON.stringify(tx.id)}
             </p>
             {/* <pre>
-            quotaId: {quotaId.id} ticker:{toCoin.ticker} fromAmount:{fromAmount}
-            </pre>
-            <pre>
-            from:{fromAccount.address}
-            </pre>
-            <pre>
-            to:{toAddress}
+            {partner.quotaId}
             </pre> */}
             <Button toGo={toGo} handleSubmit={handleSubmit}/>
         </div>

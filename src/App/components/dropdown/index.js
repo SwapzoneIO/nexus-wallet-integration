@@ -6,33 +6,71 @@ import styles from './styles.module.scss';
 const {
     libraries: {
       React,
+      React: { useRef, useEffect, useState },
       ReactRedux: { useSelector, useDispatch },
     },
   } = NEXUS;
 
-function Dropdown ({ isClick, elements, currencies }) {
+function useOutsideClick(ref, setVisible) {
+    useEffect(() => {
+        function handleClickOutside(event) {
+        if (ref.current && !ref.current.contains(event.target)) {
+            setVisible(false)
+        }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => {
+        document.removeEventListener("mousedown", handleClickOutside)
+        }
+    }, [ref])
+}
+
+function Dropdown ({ elementsList, inform }) {
+    const [isClick, setVisible] = useState(false)
+
+    const handleDropdown = (state) => {
+        (state) ? setVisible(false) : setVisible(true)
+    }
+    const ref = useRef(null)
+    useOutsideClick(ref, setVisible)
+
     const queryId = new Date().getTime().toString()
 
     const { fromAmount, partnersList } = useSelector(state => state.exchange.exchangeInfo)
     const dispatch = useDispatch()
 
     const handleElement = (elem) => {
-        if (currencies){
+        if (inform.ticker){
             dispatch({
                 type: TYPE.UPDATE_TO_COIN,
                 coin: elem,
             })
             dispatch({
-                type: TYPE.IS_LOADING,
-                isLoading: true
+                type: TYPE.IS_BEST_RATE, 
+                isFindBestRate: false
               })
-            partnersList.forEach((partner) => dispatch(fetchRate({
-                partner: partner.id,
-                amount: fromAmount,
-                from: "nxs",
-                to: elem.ticker,
-                queryId,
-            }, partner)))
+              dispatch({
+                type: TYPE.UPDATE_RATE, 
+                rate: 0
+              })
+              dispatch({
+                type: TYPE.IS_LOADING, 
+                isLoading: 0
+              })
+              
+            let countPartners = 0
+            partnersList.forEach((partner) => {
+                countPartners++
+
+                dispatch(fetchRate({
+                    partner: partner.id,
+                    amount: fromAmount,
+                    from: "nxs",
+                    to: elem.ticker,
+                    queryId,
+                }, partner, countPartners))
+            })
         } else {
             dispatch({
                 type: TYPE.UPDATE_FROM_ACCOUNT,
@@ -50,18 +88,26 @@ function Dropdown ({ isClick, elements, currencies }) {
     }
 
     return(
-        <ul className={(isClick) ? styles.dropdown : styles.hide}>
-            {(elements.length) ? 
-            elements.map(elem => (
-            <li className={styles.dropdown__elem} onClick={() => handleElement(elem)}>
-                {(elem.name) ? <span>{`Nexus (${elem.name})`}</span> : <span>{elem.title}</span>}
-                <span className={styles.amount}>{elem.balance} {elem.token_name}</span>
-            </li> 
-            )) :
-            <li className={styles.dropdown__elemNotFound}>
-            <span>Elements not found</span>
-            </li>}
-        </ul>
+        <div className={styles.column}>
+          <span>From</span>
+          <div className={styles.inform} onClick={() => handleDropdown(isClick)} ref={ref}>
+            <span className={(isClick) ? styles.inform__up : styles.inform__down}></span>
+            <span> {(inform.name) ? `Nexus (${inform.name})` : inform.title} </span>
+            <span className={styles.amount}> {(inform.balance >= 0) ? `${inform.balance} ${inform.token_name}` : null} </span>
+                <ul className={(isClick) ? styles.dropdown : styles.hide}>
+                    {(elementsList.length) ? 
+                    elementsList.map(elem => (
+                    <li className={styles.dropdown__elem} onClick={() => handleElement(elem)}>
+                        {(elem.name) ? <span>{`Nexus (${elem.name})`}</span> : <span>{elem.title}</span>}
+                        <span className={styles.amount}>{elem.balance} {elem.token_name}</span>
+                    </li> 
+                    )) :
+                    <li className={styles.dropdown__elemNotFound}>
+                    <span>Elements not found</span>
+                    </li>}
+                </ul>
+          </div>
+        </div>
     )
 }
 

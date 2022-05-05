@@ -10,7 +10,8 @@ const {
 } = NEXUS;
 
 const initialState = {
-  isLoading: false,
+  isFindBestRate: false,
+  isLoading: 0,
   fromAmount: 0,
   fromAccount: {},
   toAddress: '',
@@ -23,11 +24,17 @@ const initialState = {
   bestRate: 0,
   partnersList: [],
   tx: '',
-  quotaId: '',
+  partner: '',
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case TYPE.IS_BEST_RATE: {
+      return {  
+        ...state,
+        isFindBestRate: action.isFindBestRate,
+      };
+    }
     case TYPE.IS_LOADING: {
       return {  
         ...state,
@@ -84,7 +91,7 @@ export default (state = initialState, action) => {
     case TYPE.UPDATE_QUOTA_ID: {
       return {
         ...state,
-        quotaId: action.quotaId,
+        partner: action.partner,
       };
     }
     case TYPE.SAVE_TRANSACTION: {
@@ -147,37 +154,55 @@ export const fetchPartners = async (dispatch) => {
   })
 }
 
-export const fetchRate = (params, partner) => async (dispatch, getState) => {
+export const fetchRate = (params, partner, countPartners) => async (dispatch, getState) => {
   const { data: response } = await api.get('/v1/exchange/rate', { params })
   const { exchange } = getState()
   const { exchangeInfo } = exchange
-  const { bestRate } = exchangeInfo
+  const { bestRate, toCoin, fromAmount, isLoading } = exchangeInfo
 
-  dispatch({ 
+  dispatch({
     type: TYPE.IS_LOADING, 
-    isLoading: response
+    isLoading: isLoading + countPartners
   })
 
-  if (response.rate && Number(response.rate) > bestRate) {
+  const { data: limit } = await api.get('/v1/exchange/limits', {params: {
+    from: "nxs",
+    partner: partner.id,
+    to: toCoin.ticker
+  } })
+
+  if (response.rate && Number(response.rate) > bestRate 
+    && Number(limit.limitPromises.min) < fromAmount && isLoading >= 253) {
     dispatch({
       type: TYPE.UPDATE_RATE,
       rate: Number(response.rate),
     })
     dispatch({
       type: TYPE.UPDATE_QUOTA_ID,
-      quotaId: partner,
+      partner: partner,
+    })
+    dispatch({
+      type: TYPE.IS_BEST_RATE, 
+      isFindBestRate: true
     })
   }
+
+  // if (isLoading > 100) {
+  //   dispatch({
+  //     type: TYPE.IS_LOADING, 
+  //     isLoading: true
+  //   })
+  // }
 }
 
 export const createTransaction = () => async (dispatch, getState) => {
   const { exchange } = getState()
   const { exchangeInfo } = exchange
-  const { quotaId, toCoin, fromAmount, fromAccount, toAddress } = exchangeInfo
+  const { partner, toCoin, fromAmount, fromAccount, toAddress } = exchangeInfo
 
   try {
     const response = await api.post('/v1/exchange/create', { 
-      quotaId: quotaId.quotaId,
+      quotaId: partner.quotaId,
       to: toCoin.ticker,
       from: 'nxs',
       amountDeposit: fromAmount,
@@ -204,22 +229,13 @@ export const createTransaction = () => async (dispatch, getState) => {
     //   amount: 250
     // }])
     // .then(result => {
-    //         dispatch({ 
-    //           type: TYPE.IS_LOADING, 
-    //           isLoading: result
-    //         })
+
     //       })
     //       .catch(err => {
-    //         dispatch({ 
-    //           type: TYPE.IS_LOADING, 
-    //           isLoading: err
-    //         })
+
     //       })
 
-    // dispatch({ 
-    //   type: TYPE.IS_LOADING, 
-    //   isLoading: sendTransaction
-    // })
+
 
   //   await secureApiCall(`/finance/debit/artillar`, {
   //     "pin": "4687775983255942",
@@ -232,16 +248,10 @@ export const createTransaction = () => async (dispatch, getState) => {
   //     ]
   // })
   //     .then(result => {
-  //       dispatch({ 
-  //         type: TYPE.IS_LOADING, 
-  //         isLoading: result
-  //       })
+
   //     })
   //     .catch(err => {
-  //       dispatch({ 
-  //         type: TYPE.IS_LOADING, 
-  //         isLoading: err
-  //       })
+
   //     })
 
   } catch (ignore) {

@@ -29,6 +29,7 @@
   margin-top: 30px;
   display: flex;
   justify-content: space-around;
+  align-items: center;
 
   .columnImg{
     flex: 2;
@@ -127,4 +128,29 @@
   }
 }
 
+.skeleton {
+  display: inline-block;
+  position: relative;
+  top: 18px;
+  left: 10px;
+  border-radius: 100px;
+  background: #232324;
+  height: 15px;
+  overflow: hidden;
+  width: 40%;
+  animation: move-light 1s ease-in infinite;
+}
 
+@keyframes move-light {
+  0% {
+    background: rgb(35, 35, 36);
+  }
+
+  50% {
+    background: rgba(35, 35, 36, 0.3);
+  }
+
+  100% {
+    background: rgb(35, 35, 36);
+  }
+}
