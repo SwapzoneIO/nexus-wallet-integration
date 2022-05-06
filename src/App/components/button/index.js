@@ -11,14 +11,12 @@ const {
   } = NEXUS;
 
 function Button ({ step, toGo }) {    
-    const { isFindBestRate } = useSelector
     const dispatch = useDispatch()
-
     const handleSubmit = async () => {
         await dispatch(createTransaction())
     }
 
-    const { tx } = useSelector(state => state.exchange.exchangeInfo)
+    const { tx, isFindBestRate } = useSelector(state => state.exchange.exchangeInfo)
     useEffect(() => {
         if (tx.id) { 
             toGo(1)

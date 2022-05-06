@@ -49,27 +49,24 @@ function Dropdown ({ elementsList, inform }) {
             dispatch({
                 type: TYPE.IS_BEST_RATE, 
                 isFindBestRate: false
-              })
+            })
               dispatch({
                 type: TYPE.UPDATE_RATE, 
                 rate: 0
-              })
-              dispatch({
+            })
+            dispatch({
                 type: TYPE.IS_LOADING, 
                 isLoading: 0
-              })
+            })
               
-            let countPartners = 0
-            partnersList.forEach((partner) => {
-                countPartners++
-
+            partnersList.forEach((partner, index) => {
                 dispatch(fetchRate({
                     partner: partner.id,
                     amount: fromAmount,
                     from: "nxs",
                     to: elem.ticker,
                     queryId,
-                }, partner, countPartners))
+                }, partner, index))
             })
         } else {
             dispatch({

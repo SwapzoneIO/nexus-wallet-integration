@@ -29,7 +29,10 @@ function Input ({ value, text }) {
       if (value > 1) {
         value.replace(/^0+/, '')
       }
-
+      dispatch({
+        type: TYPE.IS_LOADING, 
+        isLoading: 0
+      })
       dispatch({
         type: TYPE.UPDATE_FROM_AMOUNT,
         amountFrom: value,
@@ -41,23 +44,15 @@ function Input ({ value, text }) {
       dispatch({
         type: TYPE.UPDATE_RATE, 
         rate: 0
-      })
-      dispatch({
-        type: TYPE.IS_LOADING, 
-        isLoading: 0
-      })
-      
-      let countPartners = 0
-      partnersList.forEach((partner) => {
-        countPartners++
-
+      })      
+      partnersList.forEach((partner, index) => {
         dispatch(fetchRate({
           partner: partner.id,
           amount: value,
           from: "nxs",
           to: toCoin.ticker,
           queryId,
-        }, partner, countPartners))
+        }, partner, index))
       })
 
     } else if (text.toLowerCase() === 'address'){

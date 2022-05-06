@@ -40,9 +40,9 @@ function Details ({ toGo, step }) {
                 </tr>
             </table>
             {step === 3 ? <StatusLine/> : null}
-            <p>
+            {/* <p>
                 {JSON.stringify(tx)}
-            </p>
+            </p> */}
 
             <Button step={step} toGo={toGo}/>
         </div>

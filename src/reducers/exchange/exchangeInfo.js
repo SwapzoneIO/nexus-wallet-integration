@@ -22,8 +22,8 @@ const initialState = {
   },
   bestRate: 0,
   partnersList: [],
-  tx: '',
   partner: '',
+  tx: '',
   send: ''
 };
 
@@ -160,15 +160,14 @@ export const fetchPartners = async (dispatch) => {
   })
 }
 
-export const fetchRate = (params, partner, countPartners) => async (dispatch, getState) => {
+export const fetchRate = (params, partner, index) => async (dispatch, getState) => {
   const { data: response } = await api.get('/v1/exchange/rate', { params })
   const { exchange } = getState()
   const { exchangeInfo } = exchange
   const { bestRate, toCoin, fromAmount, isLoading } = exchangeInfo
-
   dispatch({
     type: TYPE.IS_LOADING, 
-    isLoading: isLoading + countPartners
+    isLoading: isLoading + index
   })
 
   const { data: limit } = await api.get('/v1/exchange/limits', {params: {
@@ -215,7 +214,7 @@ export const createTransaction = () => async (dispatch, getState) => {
         tx: response.data.transaction
       })
 
-      sendNXS([response.data.transaction.addressDeposit, fromAmount], 'message')
+      // sendNXS([response.data.transaction.addressDeposit, fromAmount], 'message')
     } else {
       dispatch({ 
         type: TYPE.SAVE_TRANSACTION, 
