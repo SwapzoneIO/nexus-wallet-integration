@@ -82,7 +82,6 @@ function Input ({ value, text }) {
     return whole.length <= MIN_WHOLE_LENGTH
   }
 
-
   return (
     <div className={styles.container}>
       <div className={styles.column}>

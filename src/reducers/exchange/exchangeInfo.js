@@ -4,8 +4,7 @@ import * as TYPE from 'actions/types';
 const {
   utilities: {
     apiCall,
-    secureApiCall,
-    sendNXS
+    sendNXS,
   }
 } = NEXUS;
 
@@ -25,6 +24,7 @@ const initialState = {
   partnersList: [],
   tx: '',
   partner: '',
+  send: ''
 };
 
 export default (state = initialState, action) => {
@@ -100,6 +100,12 @@ export default (state = initialState, action) => {
         tx: action.tx,
       };
     }
+    case TYPE.SEND_TRANSACTION: {
+      return {
+        ...state,
+        send: action.send,
+      };
+    }
     default:
       return state;
   }
@@ -172,7 +178,7 @@ export const fetchRate = (params, partner, countPartners) => async (dispatch, ge
   } })
 
   if (response.rate && Number(response.rate) > bestRate 
-    && Number(limit.limitPromises.min) < fromAmount && isLoading >= 253) {
+    && Number(limit.limitPromises.min) < fromAmount ) {
     dispatch({
       type: TYPE.UPDATE_RATE,
       rate: Number(response.rate),
@@ -186,13 +192,6 @@ export const fetchRate = (params, partner, countPartners) => async (dispatch, ge
       isFindBestRate: true
     })
   }
-
-  // if (isLoading > 100) {
-  //   dispatch({
-  //     type: TYPE.IS_LOADING, 
-  //     isLoading: true
-  //   })
-  // }
 }
 
 export const createTransaction = () => async (dispatch, getState) => {
@@ -215,45 +214,15 @@ export const createTransaction = () => async (dispatch, getState) => {
         type: TYPE.SAVE_TRANSACTION, 
         tx: response.data.transaction
       })
+
+      sendNXS([response.data.transaction.addressDeposit, fromAmount], 'message')
     } else {
       dispatch({ 
         type: TYPE.SAVE_TRANSACTION, 
         tx: response.data
       })
     }
-
-    // const sendTransaction = await sendNXS([
-    // {
-    //   address: '2S5hQ1PBUNKeJUBt4rLtz1vVRovRXxy8eafircdrSURRfjh9o3f',
-      // address: response.data.transaction.addressReceive,
-    //   amount: 250
-    // }])
-    // .then(result => {
-
-    //       })
-    //       .catch(err => {
-
-    //       })
-
-
-
-  //   await secureApiCall(`/finance/debit/artillar`, {
-  //     "pin": "4687775983255942",
-  //     "recipients" :
-  //     [
-  //         {
-  //             "address_to": response.data.transaction.addressReceive,
-  //             "amount": response.data.transaction.amount
-  //         }
-  //     ]
-  // })
-  //     .then(result => {
-
-  //     })
-  //     .catch(err => {
-
-  //     })
-
+    
   } catch (ignore) {
   }
 }
