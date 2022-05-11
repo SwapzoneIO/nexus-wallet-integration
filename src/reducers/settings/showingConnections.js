@@ -1,21 +1,21 @@
-import * as TYPE from 'actions/types';
+import * as TYPE from 'actions/types'
 
-const initialState = false;
+const initialState = false
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case TYPE.INITIALIZE: {
-      const { showingConnections } = action.payload.storageData;
-      return showingConnections !== undefined ? showingConnections : state;
+      const { showingConnections } = action.payload.storageData
+      return showingConnections !== undefined ? showingConnections : state
     }
 
     case TYPE.SHOW_CONNECTIONS:
-      return true;
+      return true
 
     case TYPE.HIDE_CONNECTIONS:
-      return false;
+      return false
 
     default:
-      return state;
+      return state
   }
-};
+}

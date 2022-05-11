@@ -1,15 +1,15 @@
-import * as TYPE from 'actions/types';
+import * as TYPE from 'actions/types'
 
-const initialState = {};
+const initialState = {}
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case TYPE.INITIALIZE:
-      return action.payload.userStatus;
+      return action.payload.userStatus
 
     case TYPE.UPDATE_USER_STATUS:
-      return action.payload;
+      return action.payload
     default:
-      return state;
+      return state
   }
-};
+}

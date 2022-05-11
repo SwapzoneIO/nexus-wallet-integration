@@ -3,3 +3,4 @@ dist/js
 storage.json
 repo_info.json
 .env
+.DS_Store

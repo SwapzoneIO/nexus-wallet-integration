@@ -1,13 +1,13 @@
-import * as TYPE from 'actions/types';
+import * as TYPE from 'actions/types'
 
-const initialState = false;
+const initialState = false
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case TYPE.INITIALIZE:
-      return true;
+      return true
 
     default:
-      return state;
+      return state
   }
-};
+}

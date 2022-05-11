@@ -1,7 +1,7 @@
-import { fetchAccounts, fetchCoins, fetchPartners } from 'reducers/exchange/exchangeInfo';
-import Details from './components/details';
-import Exchange from './components/exchange';
-import Header from './components/header';
+import { fetchAccounts, fetchCoins, fetchPartners, steps } from 'reducers/exchange/exchangeInfo'
+import Details from './components/details'
+import Exchange from './components/exchange'
+import Header from './components/header'
 
 import styles from './styles.module.scss'
 
@@ -11,7 +11,7 @@ const {
     React: { useState, useEffect },
     ReactRedux: { useDispatch },
   },
-} = NEXUS;
+} = NEXUS
 
 export default function Main() {
   const [step, setNumberStep] = useState(1)
@@ -23,17 +23,14 @@ export default function Main() {
     dispatch(fetchPartners)
   }, [])
 
-  const toGo = (nextStep) => {
-    setNumberStep((step) => step + nextStep)
+  const toGo = nextStep => {
+    setNumberStep(step => step + nextStep)
   }
 
   return (
-    <div className={styles.wrapper}>       
-      <Header step ={step}/>       
-      { step === 1 ? 
-        <Exchange toGo={toGo} step={step} /> :
-        <Details toGo={toGo} step={step} />
-      }
+    <div className={styles.wrapper}>
+      <Header step={step} />
+      {step === steps.chooseCurrencies ? <Exchange toGo={toGo} step={step} /> : <Details toGo={toGo} step={step} />}
     </div>
-  );
+  )
 }

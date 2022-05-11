@@ -1,11 +1,11 @@
-import inputValue from './inputValue';
+import inputValue from './inputValue'
 
 const {
   libraries: {
     Redux: { combineReducers },
   },
-} = NEXUS;
+} = NEXUS
 
 export default combineReducers({
   inputValue,
-});
+})

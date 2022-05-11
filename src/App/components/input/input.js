@@ -1,27 +1,36 @@
-import { fetchRate } from 'reducers/exchange/exchangeInfo';
-import * as TYPE from 'actions/types';
+import { fetchRate } from 'reducers/exchange/exchangeInfo'
+import * as TYPE from 'actions/types'
 
-import styles from './styles.module.scss';
+import styles from './styles.module.scss'
 
 const {
-    libraries: {
-      React,
-      ReactRedux: { useDispatch, useSelector },
-    }
-  } = NEXUS;
+  libraries: {
+    React,
+    ReactRedux: { useDispatch, useSelector },
+  },
+} = NEXUS
 
 const MIN_WHOLE_LENGTH = 12
 
-function Input ({ value, text }) {
+function Input({ value, text }) {
   const queryId = new Date().getTime().toString()
-  const { fromAccount: { balance }, partnersList, toCoin } = useSelector(state => state.exchange.exchangeInfo)
+  const {
+    fromAccount: { balance },
+    partnersList,
+    toCoin,
+  } = useSelector(state => state.exchange.exchangeInfo)
   const dispatch = useDispatch()
 
-  const updateAmount = (evt) => {
-    if (text.toLowerCase() === 'amount'){
+  const updateAmount = evt => {
+    if (text.toLowerCase() === 'amount') {
       const value = evt.target.value.trim().replace(/^0+/, '0').replace(',', '.')
 
-      if (isNaN(value) || !balance || !checkAmountLength(value) || Number(value) < 0 || Number(value) > Number(balance)
+      if (
+        isNaN(value) ||
+        !balance ||
+        !checkAmountLength(value) ||
+        Number(value) < 0 ||
+        Number(value) > Number(balance)
       ) {
         return
       }
@@ -30,32 +39,37 @@ function Input ({ value, text }) {
         value.replace(/^0+/, '')
       }
       dispatch({
-        type: TYPE.IS_LOADING, 
-        isLoading: 0
+        type: TYPE.IS_LOADING,
+        isLoading: 0,
       })
       dispatch({
         type: TYPE.UPDATE_FROM_AMOUNT,
         amountFrom: value,
       })
       dispatch({
-        type: TYPE.IS_BEST_RATE, 
-        isFindBestRate: false
+        type: TYPE.IS_BEST_RATE,
+        isFindBestRate: false,
       })
       dispatch({
-        type: TYPE.UPDATE_RATE, 
-        rate: 0
-      })      
-      partnersList.forEach((partner, index) => {
-        dispatch(fetchRate({
-          partner: partner.id,
-          amount: value,
-          from: "nxs",
-          to: toCoin.ticker,
-          queryId,
-        }, partner, index))
+        type: TYPE.UPDATE_RATE,
+        rate: 0,
       })
-
-    } else if (text.toLowerCase() === 'address'){
+      partnersList.forEach((partner, index) => {
+        dispatch(
+          fetchRate(
+            {
+              partner: partner.id,
+              amount: value,
+              from: 'nxs',
+              to: toCoin.ticker,
+              queryId,
+            },
+            partner,
+            index,
+          ),
+        )
+      })
+    } else if (text.toLowerCase() === 'address') {
       dispatch({
         type: TYPE.UPDATE_TO_ADDRESS,
         address: evt.target.value,
@@ -67,7 +81,7 @@ function Input ({ value, text }) {
     }
   }
 
-  const checkAmountLength = (value) => {
+  const checkAmountLength = value => {
     const [whole, fractional] = value.split('.')
 
     if (whole.length <= MIN_WHOLE_LENGTH && !fractional) {
@@ -81,7 +95,7 @@ function Input ({ value, text }) {
     <div className={styles.container}>
       <div className={styles.column}>
         <span>{text}</span>
-        <input type="text" value={value} onChange={updateAmount}/>
+        <input type='text' value={value} onChange={updateAmount} />
       </div>
     </div>
   )

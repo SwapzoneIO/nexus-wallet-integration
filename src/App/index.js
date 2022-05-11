@@ -1,4 +1,4 @@
-import Main from './Main';
+import Main from './Main'
 
 const {
   libraries: {
@@ -11,19 +11,19 @@ const {
     },
   },
   utilities: { color },
-} = NEXUS;
+} = NEXUS
 
-const emotionCache = createCache({ container: document.head, key: 'emotion' });
+const emotionCache = createCache({ container: document.head, key: 'emotion' })
 
 export default function App() {
-  const initialized = useSelector((state) => state.initialized);
-  const theme = useSelector((state) => state.theme);
-  if (!initialized) return null;
+  const initialized = useSelector(state => state.initialized)
+  const theme = useSelector(state => state.theme)
+  if (!initialized) return null
 
   const themeWithMixer = {
     ...theme,
     mixer: color.getMixer(theme.background, theme.foreground),
-  };
+  }
 
   return (
     <CacheProvider value={emotionCache}>
@@ -31,5 +31,5 @@ export default function App() {
         <Main />
       </ThemeProvider>
     </CacheProvider>
-  );
+  )
 }

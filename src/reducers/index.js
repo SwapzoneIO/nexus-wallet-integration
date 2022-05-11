@@ -1,16 +1,16 @@
-import initialized from './initialized';
-import theme from './theme';
-import coreInfo from './coreInfo';
-import settings from './settings';
-import ui from './ui';
-import user from './user';
-import exchange from './exchange';
+import initialized from './initialized'
+import theme from './theme'
+import coreInfo from './coreInfo'
+import settings from './settings'
+import ui from './ui'
+import user from './user'
+import exchange from './exchange'
 
 const {
   libraries: {
     Redux: { combineReducers },
   },
-} = NEXUS;
+} = NEXUS
 
 export default function createReducer() {
   return combineReducers({
@@ -21,5 +21,5 @@ export default function createReducer() {
     ui,
     user,
     exchange,
-  });
+  })
 }
