@@ -1,6 +1,11 @@
-import configureStore from 'configureStore'
 import App from './App'
-import { initialize, updateCoreInfo, updateTheme, updateUserStatus } from './actions/actionCreators'
+import configureStore from 'redux/configureStore'
+import {
+  initialize,
+  updateCoreInfo,
+  updateTheme,
+  updateUserStatus
+} from 'redux/actions/actionCreators'
 import 'styles/index.global.scss'
 import './styles/variables.scss'
 

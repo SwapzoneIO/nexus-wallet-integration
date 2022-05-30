@@ -1,15 +1,14 @@
-import * as TYPE from 'actions/types'
+import * as TYPE from 'redux/actions/types'
 
-const initialState = null
+const initialState = {}
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case TYPE.INITIALIZE:
-      return action.payload.theme
+      return action.payload.userStatus
 
-    case TYPE.UPDATE_THEME:
+    case TYPE.UPDATE_USER_STATUS:
       return action.payload
-
     default:
       return state
   }

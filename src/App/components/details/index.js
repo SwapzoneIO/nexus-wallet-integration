@@ -1,4 +1,4 @@
-import { steps } from 'reducers/exchange/exchangeInfo'
+import { steps } from 'redux/reducers/exchange/exchangeInfo'
 import StatusLine from '../statusTransaction'
 import NavButton from '../navButton'
 

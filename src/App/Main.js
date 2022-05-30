@@ -1,4 +1,4 @@
-import { fetchAccounts, fetchCoins, fetchPartners, steps } from 'reducers/exchange/exchangeInfo'
+import { fetchAccounts, fetchCoins, fetchPartners, steps } from 'redux/reducers/exchange/exchangeInfo'
 import Details from './components/details'
 import Exchange from './components/exchange'
 import Header from './components/header'

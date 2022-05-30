@@ -1,4 +1,4 @@
-import { steps } from 'reducers/exchange/exchangeInfo'
+import { steps } from 'redux/reducers/exchange/exchangeInfo'
 import styles from './styles.module.scss'
 
 const {

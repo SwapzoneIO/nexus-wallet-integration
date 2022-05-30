@@ -1,5 +1,5 @@
 import axios from 'axios'
-import * as TYPE from 'actions/types'
+import * as TYPE from 'redux/actions/types'
 
 export const steps = {
   chooseCurrencies: 1,
@@ -14,7 +14,7 @@ const {
 const initialState = {
   isFindBestRate: false,
   isLoading: 0,
-  fromAmount: 0,
+  fromAmount: '',
   fromAccount: {},
   toAddress: '',
   toCoin: {},

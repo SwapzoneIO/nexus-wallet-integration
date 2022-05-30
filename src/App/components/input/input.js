@@ -1,5 +1,5 @@
-import { fetchRate } from 'reducers/exchange/exchangeInfo'
-import * as TYPE from 'actions/types'
+import { fetchRate } from 'redux/reducers/exchange/exchangeInfo'
+import * as TYPE from 'redux/actions/types'
 
 import styles from './styles.module.scss'
 

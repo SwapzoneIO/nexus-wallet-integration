@@ -1,34 +1,42 @@
-import * as TYPE from './types'
+import {
+  INITIALIZE,
+  UPDATE_CORE_INFO,
+  UPDATE_THEME,
+  UPDATE_USER_STATUS,
+  SHOW_CONNECTIONS,
+  HIDE_CONNECTIONS,
+  UPDATE_INPUT,
+} from './types'
 
 export const initialize = data => ({
-  type: TYPE.INITIALIZE,
+  type: INITIALIZE,
   payload: data,
 })
 
 export const updateCoreInfo = coreInfo => ({
-  type: TYPE.UPDATE_CORE_INFO,
+  type: UPDATE_CORE_INFO,
   payload: coreInfo,
 })
 
 export const updateTheme = theme => ({
-  type: TYPE.UPDATE_THEME,
+  type: UPDATE_THEME,
   payload: theme,
 })
 
 export const updateUserStatus = userStatus => ({
-  type: TYPE.UPDATE_USER_STATUS,
+  type: UPDATE_USER_STATUS,
   payload: userStatus,
 })
 
 export const showConnections = () => ({
-  type: TYPE.SHOW_CONNECTIONS,
+  type: SHOW_CONNECTIONS,
 })
 
 export const hideConnections = () => ({
-  type: TYPE.HIDE_CONNECTIONS,
+  type: HIDE_CONNECTIONS,
 })
 
 export const updateInput = inputValue => ({
-  type: TYPE.UPDATE_INPUT,
+  type: UPDATE_INPUT,
   payload: inputValue,
 })

@@ -1,4 +1,4 @@
-import * as TYPE from 'actions/types'
+import * as TYPE from 'redux/actions/types'
 
 const initialState = false
 

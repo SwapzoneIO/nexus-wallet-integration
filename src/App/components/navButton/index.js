@@ -1,4 +1,4 @@
-import { createTransaction } from 'reducers/exchange/exchangeInfo'
+import { createTransaction } from 'redux/reducers/exchange/exchangeInfo'
 
 import styles from './styles.module.scss'
 

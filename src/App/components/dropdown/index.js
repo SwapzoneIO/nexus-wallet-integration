@@ -1,6 +1,6 @@
-import { fetchRate } from 'reducers/exchange/exchangeInfo'
+import { fetchRate } from 'redux/reducers/exchange/exchangeInfo'
 
-import * as TYPE from 'actions/types'
+import * as TYPE from 'redux/actions/types'
 import styles from './styles.module.scss'
 
 const {
@@ -27,7 +27,7 @@ function useOutsideClick(ref, setVisible) {
 }
 
 function Dropdown({ elementsList, inform }) {
-  const [isClick, setVisible] = useState(false)
+  const [visible, setVisible] = useState(false)
 
   const handleDropdown = state => {
     state ? setVisible(false) : setVisible(true)
@@ -93,11 +93,11 @@ function Dropdown({ elementsList, inform }) {
   return (
     <div className={styles.column}>
       <span>From</span>
-      <div className={styles.inform} onClick={() => handleDropdown(isClick)} ref={ref}>
-        <span className={isClick ? styles.inform__up : styles.inform__down}></span>
+      <div className={styles.inform} onClick={() => handleDropdown(visible)} ref={ref}>
+        <span className={visible ? styles.inform__up : styles.inform__down}></span>
         <span> {inform.name ? `Nexus (${inform.name})` : inform.title} </span>
         <span className={styles.amount}> {inform.balance >= 0 ? `${inform.balance} ${inform.token_name}` : null} </span>
-        <ul className={isClick ? styles.dropdown : styles.hide}>
+        <ul className={visible ? styles.dropdown : styles.hide}>
           {elementsList.length ? (
             elementsList.map(elem => (
               <li className={styles.dropdown__elem} onClick={() => handleElement(elem)}>
