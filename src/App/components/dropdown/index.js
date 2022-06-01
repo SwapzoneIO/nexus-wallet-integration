@@ -58,22 +58,23 @@ function Dropdown({ elementsList, inform }) {
         type: TYPE.IS_LOADING,
         isLoading: 0,
       })
-
-      partnersList.forEach((partner, index) => {
-        dispatch(
-          fetchRate(
-            {
-              partner: partner.id,
-              amount: fromAmount,
-              from: 'nxs',
-              to: elem.ticker,
-              queryId,
-            },
-            partner,
-            index,
-          ),
-        )
-      })
+      if (fromAmount) {
+        partnersList.forEach((partner, index) => {
+          dispatch(
+            fetchRate(
+              {
+                partner: partner.id,
+                amount: fromAmount,
+                from: 'nxs',
+                to: elem.ticker,
+                queryId,
+              },
+              partner,
+              index,
+            ),
+          )
+        })
+      }
     } else {
       dispatch({
         type: TYPE.UPDATE_FROM_ACCOUNT,

@@ -27,7 +27,7 @@ function navButton({ step, toGo }) {
     case 1:
       return (
         <div className={styles.container}>
-          <button disabled={!isFindBestRate} onClick={() => toGo(1)}>
+          <button onClick={() => toGo(1)}>
             
             Exchange
           </button>

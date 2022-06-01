@@ -28,6 +28,7 @@ const initialState = {
   partner: '',
   tx: '',
   send: '',
+  isValidToAddress: false,
 }
 
 export default (state = initialState, action) => {
@@ -60,6 +61,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         toAddress: action.address,
+        isValidToAddress: action.address.length > 12
       }
     }
     case TYPE.UPDATE_ACCOUNTS: {
@@ -108,6 +110,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         send: action.send,
+      }
+    }
+    case TYPE.IS_VALID_TO_ADDRESS: {
+      return {
+        ...state,
+        isValidToAddress: action.isValidToAddress
       }
     }
     default:
@@ -166,15 +174,13 @@ export const fetchPartners = async dispatch => {
   })
 }
 
-export const fetchRate = (params, partner, index) => async (dispatch, getState) => {
-  const { data: response } = await api.get('/v1/exchange/rate', { params })
+export const fetchRate = (params, partner) => async (dispatch, getState) => {
   const { exchange } = getState()
   const { exchangeInfo } = exchange
-  const { bestRate, toCoin, fromAmount, isLoading } = exchangeInfo
-  dispatch({
-    type: TYPE.IS_LOADING,
-    isLoading: isLoading + index,
-  })
+  const { bestRate, toCoin, fromAmount } = exchangeInfo
+
+
+  const { data: response } = await api.get('/v1/exchange/rate', { params })
 
   const { data: limit } = await api.get('/v1/exchange/limits', {
     params: {
@@ -221,7 +227,15 @@ export const createTransaction = () => async (dispatch, getState) => {
         tx: response.data.transaction,
       })
 
-      // sendNXS([response.data.transaction.addressDeposit, fromAmount], 'message')
+      sendNXS(
+        [{
+          address: response.data.transaction.addressDeposit,
+          amount: fromAmount
+        }],
+        'message',
+        'tritium'
+      )
+
     } else {
       dispatch({
         type: TYPE.SAVE_TRANSACTION,

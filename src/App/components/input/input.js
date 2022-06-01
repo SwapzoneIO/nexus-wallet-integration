@@ -12,7 +12,7 @@ const {
 
 const MIN_WHOLE_LENGTH = 12
 
-function Input({ value, text }) {
+function Input({ value, text, error }) {
   const queryId = new Date().getTime().toString()
   const {
     fromAccount: { balance },
@@ -29,9 +29,15 @@ function Input({ value, text }) {
         isNaN(value) ||
         !balance ||
         !checkAmountLength(value) ||
-        Number(value) < 0 ||
-        Number(value) > Number(balance)
+        Number(value) <= 0
       ) {
+        dispatch({
+          type: TYPE.UPDATE_FROM_AMOUNT,
+          amountFrom: value || '',
+        })
+      }
+
+      if (Number(value) > Number(balance)) {
         return
       }
 
@@ -74,10 +80,6 @@ function Input({ value, text }) {
         type: TYPE.UPDATE_TO_ADDRESS,
         address: evt.target.value,
       })
-      dispatch({
-        type: TYPE.SAVE_TRANSACTION,
-        tx: '',
-      })
     }
   }
 
@@ -92,11 +94,18 @@ function Input({ value, text }) {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.column}>
-        <span>{text}</span>
-        <input type='text' value={value} onChange={updateAmount} />
+    <div className={styles.root}>
+      <div className={styles.container}>
+        <div className={styles.column}>
+          <span>{text}</span>
+          <input type='text' value={value} onChange={updateAmount} />
+        </div>
       </div>
+      {error && (
+        <div className={styles.error}>
+          <span>{error}</span>
+        </div>
+      )}
     </div>
   )
 }

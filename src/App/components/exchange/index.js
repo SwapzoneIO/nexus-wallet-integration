@@ -7,9 +7,13 @@ import styles from './styles.module.scss'
 const {
   libraries: {
     React,
+    React: { useState, useEffect },
     ReactRedux: { useSelector },
   },
 } = NEXUS
+
+const RATES_ERROR = 'Couldn\'t get rate for this pair. Try another amount.'
+const ADDRESS_ERROR = 'Address is invalid'
 
 function Exchange({ toGo, step }) {
   const {
@@ -21,18 +25,24 @@ function Exchange({ toGo, step }) {
     toAddress,
     bestRate,
     isFindBestRate,
-    isLoading,
-    partnersList,
+    isValidToAddress
   } = useSelector(state => state.exchange.exchangeInfo)
 
-  let totalAmountPartners = partnersList.reduce(function (sum, current, index) {
-    return sum + index
-  }, 0)
+  const [validationErrors, setValidationErrors] = useState({})
 
-  let loaded =
-    isLoading === totalAmountPartners ||
-    isLoading >= totalAmountPartners * 2 ||
-    (isLoading >= totalAmountPartners && !isFindBestRate)
+  useEffect(() => {
+    setValidationErrors(prevErrors => ({ ...prevErrors, amount: '', address: '' }))
+  }, [toAddress, fromAmount])
+
+  function handlePressNext (...args) {
+    setValidationErrors(prevErrors => ({
+      ...prevErrors,
+      address: isValidToAddress ? '' : ADDRESS_ERROR,
+      amount: isFindBestRate ? '' : RATES_ERROR
+    }))
+
+    if (isValidToAddress && isFindBestRate) toGo(...args)
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -48,24 +58,16 @@ function Exchange({ toGo, step }) {
         </div>
         <Dropdown elementsList={coinsList} inform={toCoin} />
       </div>
-
-      <Input value={fromAmount} text='Amount' />
-      {!isFindBestRate && loaded && (
-        <div className={styles.error}>
-          <svg width='17' height='15' viewBox='0 0 17 15' fill='none' xmlns='http://www.w3.org/2000/svg'>
-            <path
-              fill-rule='evenodd'
-              clip-rule='evenodd'
-              d='M9.78365 0.720686C9.23147 -0.240229 7.76854 -0.240228 7.21636 0.720686L0.178265 12.9685C-0.348618 13.8854 0.355674 15 1.46192 15H15.5382C16.6443 15 17.3487 13.8854 16.8217 12.9685L9.78365 0.720686ZM9.376 5.02329C9.376 4.64329 9.04921 4.33524 8.64607 4.33524H8.3541C7.95097 4.33524 7.62416 4.64329 7.62416 5.02329V9.76744C7.62416 10.1475 7.95097 10.4555 8.3541 10.4555H8.64607C9.0492 10.4555 9.376 10.1475 9.376 9.76744V5.02329ZM9.376 12.2117C9.376 11.8317 9.04921 11.5237 8.64607 11.5237H8.3541C7.95097 11.5237 7.62416 11.8317 7.62416 12.2117V12.2478C7.62416 12.6277 7.95097 12.9358 8.3541 12.9358H8.64607C9.0492 12.9358 9.376 12.6277 9.376 12.2478V12.2117Z'
-              fill='#E8168D'
-            />
-          </svg>
-          <span> Couldn’t get rate for this pair. Try another amount. </span>
-        </div>
-      )}
-
-      <Input value={toAddress} text='Address' />
-
+      <Input
+        value={fromAmount}
+        text='Amount'
+        error={validationErrors.amount}
+      />
+      <Input
+        value={toAddress}
+        text='Address'
+        error={validationErrors.address}
+      />
       <div className={styles.container}>
         <div className={styles.item}>
           <span>Available</span>
@@ -76,12 +78,16 @@ function Exchange({ toGo, step }) {
         <div className={styles.item}>
           <span>Receive</span>
           <span className={styles.amount}>
-            {isFindBestRate && loaded ? `${bestRate} ${toCoin.ticker}` : <span className={styles.skeleton}></span>}
+            {
+              isFindBestRate
+                ? `${bestRate} ${toCoin.ticker}`
+                : <span className={styles.skeleton}></span>
+            }
           </span>
         </div>
       </div>
 
-      <NavButton step={step} toGo={toGo} />
+      <NavButton step={step} toGo={handlePressNext} />
     </div>
   )
 }
