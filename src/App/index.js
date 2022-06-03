@@ -1,4 +1,4 @@
-import Main from './Main'
+import Layout from './Layout'
 
 const {
   libraries: {
@@ -28,7 +28,7 @@ export default function App() {
   return (
     <CacheProvider value={emotionCache}>
       <ThemeProvider theme={themeWithMixer}>
-        <Main />
+        <Layout />
       </ThemeProvider>
     </CacheProvider>
   )

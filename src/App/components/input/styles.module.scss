@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@import 'src/styles/variables';
 
 .root {
   position: relative;
@@ -66,15 +66,13 @@
 
 .error {
   position: absolute;
-  width: calc(100% + 2px);
-  left: -1px;
+  width: 100%;
   animation: fadeInDown .5s forwards;
   opacity: 1;
   font-weight: 400;
   font-size: 14px;
   line-height: 16px;
-  color: white;
-  background: rgba(232,22,141,.9);
+  color: rgba(232,22,141,.9);
   padding: 5px 0;
 
   margin-top: 1px;

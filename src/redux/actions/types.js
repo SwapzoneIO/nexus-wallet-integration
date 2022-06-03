@@ -9,6 +9,9 @@ export const HIDE_CONNECTIONS = 'HIDE_CONNECTIONS'
 
 export const UPDATE_INPUT = 'UPDATE_INPUT'
 
+export const NEXT_STEP = 'NEXT_STEP'
+export const PREVIOUS_STEP = 'PREVIOUS_STEP'
+
 export const IS_VALID_TO_ADDRESS = 'IS_VALID_TO_ADDRESS'
 export const IS_BEST_RATE = 'IS_BEST_RATE'
 export const IS_LOADING = 'IS_LOADING'

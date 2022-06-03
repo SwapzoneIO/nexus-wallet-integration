@@ -1,6 +1,6 @@
-@import '../styles/variables';
+@import 'src/styles/variables';
 
-.wrapper{
+.root{
     width: 960px;
     background: $colorBackground;
     margin: 0px auto;

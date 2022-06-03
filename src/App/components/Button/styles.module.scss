@@ -1,0 +1,44 @@
+@import 'src/styles/variables.scss';
+
+.outlined {
+  display: flex;
+  text-decoration: none;
+  color: $colorBlue;
+  background: $colorBackground;
+  border: 1px solid $colorBlue;
+  justify-content: center;
+  align-items: center;
+}
+
+.text{
+  background: none;
+  display: flex;
+  align-self: flex-start;
+  width: 50%;
+  margin-right: 10px;
+}
+
+.skeleton {
+    display: inline-block;
+    border-radius: 4px;
+    background: $colorBackground;
+    height: 40px;
+    overflow: hidden;
+    width: 45%;
+    animation: move-light 1.5s ease-in infinite;
+  }
+
+
+  @keyframes move-light {
+    0% {
+      background: rgb(75, 75, 76);
+    }
+  
+    50% {
+      background: rgba(35, 35, 36, 0.5);
+    }
+  
+    100% {
+      background: rgb(75, 75, 76);
+    }
+  }

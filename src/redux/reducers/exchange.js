@@ -1,19 +1,27 @@
 import axios from 'axios'
 import * as TYPE from 'redux/actions/types'
 
-export const steps = {
-  chooseCurrencies: 1,
-  confirmExchange: 2,
-  waitingExchange: 3,
-}
+export const steps = [
+  'chooseCurrencies',
+  'confirmExchange',
+  'waitingExchange'
+]
+
+export const stepTitles = [
+  'Exchange with Swapzone',
+  'Exchange details confirmation',
+  'Exchange confirmed'
+]
+
 
 const {
   utilities: { apiCall, sendNXS },
 } = NEXUS
 
 const initialState = {
+  step: 0,
   isFindBestRate: false,
-  isLoading: 0,
+  isLoading: false,
   fromAmount: '',
   fromAccount: {},
   toAddress: '',
@@ -118,22 +126,21 @@ export default (state = initialState, action) => {
         isValidToAddress: action.isValidToAddress
       }
     }
+    case TYPE.NEXT_STEP: {
+      return {
+        ...state,
+        step: state.step + 1
+      }
+    }
+    case TYPE.PREVIOUS_STEP: {
+      return {
+        ...state,
+        step: state.step - 1
+      }
+    }
     default:
       return state
   }
-}
-
-export const fetchAccounts = async dispatch => {
-  const response = await apiCall('users/list/accounts')
-
-  dispatch({
-    type: TYPE.UPDATE_ACCOUNTS,
-    accounts: response,
-  })
-  dispatch({
-    type: TYPE.UPDATE_FROM_ACCOUNT,
-    account: response[0],
-  })
 }
 
 const api = axios.create({
@@ -142,6 +149,25 @@ const api = axios.create({
     'x-api-key': 'DoZLClkWE',
   },
 })
+
+export const fetchAccounts = async dispatch => {
+  const response = await apiCall('users/list/accounts')
+
+  const account = response[0]
+
+  dispatch({
+    type: TYPE.UPDATE_ACCOUNTS,
+    accounts: response,
+  })
+  dispatch({
+    type: TYPE.UPDATE_FROM_ACCOUNT,
+    account: {
+      ...account,
+      title: `Nexus (${account.name})`,
+      description: `${account.balance} ${account.token_name}`
+    },
+  })
+}
 
 export const fetchCoins = async dispatch => {
   const { data: response } = await api.get('/v1/internal/get-currencies')
@@ -152,8 +178,7 @@ export const fetchCoins = async dispatch => {
         title: coin.title,
         ticker: coin.ticker,
       }))
-    })
-    .reduce((acc, nextCoin) => acc.concat(nextCoin))
+    }).flat()
 
   dispatch({
     type: TYPE.UPDATE_COINS,
@@ -161,7 +186,7 @@ export const fetchCoins = async dispatch => {
   })
   dispatch({
     type: TYPE.UPDATE_TO_COIN,
-    coin: resModify[0],
+    coin: { ...resModify[0], description: resModify[0].ticker },
   })
 }
 
@@ -174,44 +199,68 @@ export const fetchPartners = async dispatch => {
   })
 }
 
-export const fetchRate = (params, partner) => async (dispatch, getState) => {
-  const { exchange } = getState()
-  const { exchangeInfo } = exchange
-  const { bestRate, toCoin, fromAmount } = exchangeInfo
+export const fetchRates = signal => async (dispatch, getState) => {
+  const queryId = new Date().getTime().toString()
 
-
-  const { data: response } = await api.get('/v1/exchange/rate', { params })
-
-  const { data: limit } = await api.get('/v1/exchange/limits', {
-    params: {
-      from: 'nxs',
-      partner: partner.id,
-      to: toCoin.ticker,
-    },
-  })
-
-  if (response.rate && Number(response.rate) > bestRate && Number(limit.limitPromises.min) < fromAmount) {
-    dispatch({
-      type: TYPE.UPDATE_RATE,
-      rate: Number(response.rate),
-    })
-    dispatch({
-      type: TYPE.UPDATE_QUOTA_ID,
-      partner: partner,
-    })
-    dispatch({
-      type: TYPE.IS_BEST_RATE,
-      isFindBestRate: true,
-    })
-  }
-}
-
-export const createTransaction = () => async (dispatch, getState) => {
-  const { exchange } = getState()
-  const { exchangeInfo } = exchange
-  const { partner, toCoin, fromAmount, fromAccount, toAddress } = exchangeInfo
+  const {
+    exchange: {
+      partnersList,
+      fromAmount: amount,
+      toCoin
+    }
+  } = getState()
 
   try {
+    dispatch({ type: TYPE.IS_LOADING, isLoading: true })
+    const rates = await Promise.all(partnersList.map(async partner => {
+      const params = {
+        from: 'nxs',
+        partner: partner.id,
+        to: toCoin.ticker,
+      }
+
+      const { data } = await api.get('/v1/exchange/rate', {
+        signal,
+        params: { ...params, amount, queryId }
+      })
+      const { data: limit } = await api.get('/v1/exchange/limits', { signal, params })
+
+      return { partner, data, limit }
+    }))
+    dispatch({ type: TYPE.IS_LOADING, isLoading: false })
+
+    const bestRate = rates.filter(rate => !rate.data.error
+      && !!Number(rate.data.rate)
+      && rate.limit.limitPromises
+      && Number(rate.limit.limitPromises.min) < amount
+    ).sort(
+      (a, b) => a.data.rate < b.data.rate ? 1 : -1
+    )[0]
+
+    if (bestRate) {
+      dispatch({
+        type: TYPE.UPDATE_RATE,
+        rate: Number(bestRate.data.rate),
+      })
+      dispatch({
+        type: TYPE.UPDATE_QUOTA_ID,
+        partner: bestRate.partner,
+      })
+      dispatch({
+        type: TYPE.IS_BEST_RATE,
+        isFindBestRate: true,
+      })
+    }
+  } catch (ignore) {}
+}
+
+export const createTransaction = async (dispatch, getState) => {
+  const { exchange } = getState()
+  const { partner, toCoin, fromAmount, fromAccount, toAddress } = exchange
+
+  try {
+    dispatch({ type: TYPE.IS_LOADING, isLoading: true })
+
     const response = await api.post('/v1/exchange/create', {
       quotaId: partner.quotaId,
       to: toCoin.ticker,
@@ -220,6 +269,8 @@ export const createTransaction = () => async (dispatch, getState) => {
       refundAddress: fromAccount.address,
       addressReceive: toAddress,
     })
+
+    dispatch({ type: TYPE.IS_LOADING, isLoading: false })
 
     if (response.data.transaction) {
       dispatch({
@@ -242,5 +293,5 @@ export const createTransaction = () => async (dispatch, getState) => {
         tx: response.data,
       })
     }
-  } catch (ignore) {}
+  } catch (ignore) { }
 }

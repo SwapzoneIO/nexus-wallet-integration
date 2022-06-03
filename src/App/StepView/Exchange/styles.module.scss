@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@import 'src/styles/variables';
 
 .wrapper {
   width: 70%;
@@ -21,6 +21,7 @@
 
   .item{
     width: 40%;
+    position: relative;
 
     .amount{
       color: $colorMenuGray;
@@ -98,9 +99,8 @@
 
 .skeleton {
   display: inline-block;
-  position: relative;
-  top: 18px;
-  left: 10px;
+  position: absolute;
+  top: 8px;
   border-radius: 100px;
   background: #232324;
   height: 15px;

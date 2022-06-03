@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@import 'src/styles/variables';
 
 ::-webkit-scrollbar {
     -webkit-appearance: none;
@@ -13,12 +13,12 @@
     display: none;
 }
 
-.column{
+.root{
   flex: 1 260px;
   display: flex;
   flex-direction: column;
 
-  .inform{
+  .input{
     background-color: $colorDarkBackground;
     padding: 10px 20px;
     min-height: 70px;
@@ -51,7 +51,7 @@
       line-height: 24px;
       margin: 0px;
     }
-    .amount{
+    .description{
       color: $colorMenuGray;
       font-size: 16px;
     }
