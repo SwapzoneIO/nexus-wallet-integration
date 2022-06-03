@@ -15,3 +15,26 @@ This is a Nexus Wallet Module template built with React and Redux. It also inclu
 2. Download [this template module's zip file](https://github.com/Nexusoft/react_redux_module_template/releases/latest).
 3. Open Nexus Wallet, go to Settings/Modules, drag and drop the zip file you've downloaded into the "Add module" section and click "Install module" when prompted.
 4. After the wallet refreshes, an item for this template module will be added into the bottom navigation bar. Click on it to open the module.
+
+### Build instructions (for module verification)
+1. clone this repository and move to it:
+`git clone git@github.com:SwapzoneIO/nexus-wallet-integration.git`
+`cd nexus-wallet-integration`
+
+2. checkout the develop branch:
+`git checkout develop`
+
+3. install node_modules
+`npm install`
+
+4. run the project in development mode
+`npm run dev`
+
+5. open Nexus Wallet app and go to Settings page (Application tab)
+
+6. make sure "Developer mode" setting is on and "Module open source policy" setting is off, or you will not be able to install your module.
+
+7. go to Nexus Wallet Settings page (Modules tab)
+
+8. Click "Add module" and pick this module's repository folder in finder
+-- also you can zip this module's repository folder and use .zip file to add the module
