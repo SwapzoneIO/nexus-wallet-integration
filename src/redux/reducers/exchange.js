@@ -284,7 +284,8 @@ export const createTransaction = async (dispatch, getState) => {
           amount: fromAmount
         }],
         'message',
-        'tritium'
+        'tritium',
+        fromAccount.address
       )
 
     } else {

@@ -8,6 +8,7 @@ import styles from './styles.module.scss'
 const {
   libraries: {
     React,
+    React: { useEffect },
     ReactRedux: { useSelector, useDispatch },
   },
 } = NEXUS
