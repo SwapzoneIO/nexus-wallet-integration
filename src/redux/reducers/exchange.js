@@ -37,6 +37,7 @@ const initialState = {
   tx: '',
   send: '',
   isValidToAddress: false,
+  time: 0
 }
 
 export default (state = initialState, action) => {
@@ -138,6 +139,12 @@ export default (state = initialState, action) => {
         step: state.step - 1
       }
     }
+    case TYPE.UPDATE_TIME: {
+      return {
+        ...state,
+        time: action.time
+      }
+    }
     default:
       return state
   }
@@ -217,12 +224,11 @@ export const fetchRates = signal => async (dispatch, getState) => {
         from: 'nxs',
         partner: partner.id,
         to: toCoin.ticker,
+        queryId,
+        amount
       }
 
-      const { data } = await api.get('/v1/exchange/rate', {
-        signal,
-        params: { ...params, amount, queryId }
-      })
+      const { data } = await api.get('/v1/exchange/rate', { signal, params })
       const { data: limit } = await api.get('/v1/exchange/limits', { signal, params })
 
       return { partner, data, limit }
@@ -238,6 +244,10 @@ export const fetchRates = signal => async (dispatch, getState) => {
     )[0]
 
     if (bestRate) {
+      dispatch({
+        type: TYPE.UPDATE_TIME,
+        time: Number(bestRate.data.time),
+      })
       dispatch({
         type: TYPE.UPDATE_RATE,
         rate: Number(bestRate.data.rate),

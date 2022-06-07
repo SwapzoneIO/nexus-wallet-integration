@@ -16,7 +16,6 @@ const {
 } = NEXUS
 
 const RATES_ERROR = 'Couldn\'t get rate for this pair. Try another amount.'
-const ADDRESS_ERROR = 'Address is invalid'
 const AMOUNT_ERROR = 'insufficient funds'
 
 const AbortContorller = window.AbortController
@@ -32,7 +31,8 @@ export default function Exchange({ currentStep }) {
     bestRate,
     isFindBestRate,
     isValidToAddress,
-    isLoading
+    isLoading,
+    time
   } = useSelector(state => state.exchange)
 
   const [validationErrors, setValidationErrors] = useState({})
@@ -50,7 +50,7 @@ export default function Exchange({ currentStep }) {
   }, [fromAmount, toCoin.ticker])
 
   useEffect(() => {
-    setValidationErrors(prevErrors => ({ ...prevErrors, amount: '', address: '' }))
+    setValidationErrors(prevErrors => ({ ...prevErrors, amount: '' }))
   }, [toAddress, fromAmount])
 
   function handlePressNext() {
@@ -58,7 +58,6 @@ export default function Exchange({ currentStep }) {
 
     setValidationErrors(prevErrors => ({
       ...prevErrors,
-      address: isValidToAddress ? '' : ADDRESS_ERROR,
       amount: isFindBestRate ? isValidAmount ? '' : AMOUNT_ERROR : RATES_ERROR
     }))
 
@@ -178,8 +177,12 @@ export default function Exchange({ currentStep }) {
           <span className={styles.amount}>
             {
               isFindBestRate
-                ? `~ ${bestRate} ${toCoin.ticker}`
-                : (isLoading && (<span className={styles.skeleton}></span>) || `0 ${toCoin.ticker}`)
+                ? `~ ${bestRate} ${toCoin.ticker} ${time ? '( ETA: ' + time + ' min )' : ''}`
+                : (
+                    isLoading
+                      && (<span className={styles.skeleton}></span>)
+                      || `${toCoin.ticker ? '0 ' + toCoin.ticker : ''}`
+                  )
             }
           </span>
         </div>

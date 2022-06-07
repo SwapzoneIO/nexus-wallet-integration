@@ -8,7 +8,7 @@
 .container{
   margin-top: 30px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 
   .columnImg{
@@ -20,7 +20,7 @@
   }
 
   .item{
-    width: 40%;
+    width: 50%;
     position: relative;
 
     .amount{
@@ -105,7 +105,7 @@
   background: #232324;
   height: 15px;
   overflow: hidden;
-  width: 40%;
+  width: 50%;
   animation: move-light 1.5s ease-in infinite;
 }
 
